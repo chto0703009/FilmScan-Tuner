@@ -32,7 +32,7 @@ SOURCE_FILES = (
     "resources/Camera41Exp.icns", "tests/test_exposure.py", "tests/test_noise.py",
     "tools/build_exp_python_app.py", "tools/build_dmg.py", "tools/build_raw_probe.sh",
     "tools/verify_raw_probe_build.py", "tools/camera41_raw_probe.cpp",
-    "tools/build_handbooks.py", "tools/build_quick_guide.py", "tools/build_quick_guide_en.py",
+    "tools/build_getting_started.py", "tools/build_handbooks.py", "tools/build_quick_guide.py", "tools/build_quick_guide_en.py",
 )
 SOURCE_FOLDERS = ("camera41exp", "docs/handbook", "third_party/licenses")
 

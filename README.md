@@ -8,6 +8,8 @@ Shutter times below one second use reciprocal notation (for example 1/10 s); tim
 
 FilmScan Tuner helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.
 
+[Getting started - one-page guide (English PDF)](output/pdf/FilmScan_Tuner_Getting_Started_EN.pdf)
+
 [English summary and installation (PDF)](output/pdf/FilmScan_Tuner_Summary_EN.pdf)
 
 ## Run the Python app on macOS
@@ -113,3 +115,5 @@ External tools run with separate process arguments. Native universal binaries
 are pinned to the physical architecture. Perl scripts such as ExifTool use a
 matching Perl interpreter (including system arm64e slices). In DC, embedded-preview
 extraction uses the same native-interpreter policy; EXP needs no ExifTool.
+
+Rebuild the English one-page getting-started guide with `python tools/build_getting_started.py` (requires reportlab and pypdf).

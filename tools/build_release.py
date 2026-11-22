@@ -44,7 +44,7 @@ def main():
             info=zipfile.ZipInfo(prefix+'/'+name,date_time=(2026,10,23,0,0,0));info.create_system=3
             info.external_attr=(stat.S_IFREG|mode)<<16;info.compress_type=zipfile.ZIP_DEFLATED;z.writestr(info,data)
     assets=[archive]
-    for name in ['FilmScan_Tuner_Handbook_SV.pdf','FilmScan_Tuner_Handbook_EN.pdf','FilmScan_Tuner_Sammanfattning_SV.pdf','FilmScan_Tuner_Summary_EN.pdf']:
+    for name in ['FilmScan_Tuner_Getting_Started_EN.pdf','FilmScan_Tuner_Handbook_SV.pdf','FilmScan_Tuner_Handbook_EN.pdf','FilmScan_Tuner_Sammanfattning_SV.pdf','FilmScan_Tuner_Summary_EN.pdf']:
         file=ROOT/'output/pdf'/name;target=dist/file.name;shutil.copy2(file,target);assets.append(target)
     sums=dist/'SHA256SUMS.txt';sums.write_text(''.join(f'{sha(f.read_bytes())}  {f.name}\n' for f in assets))
     with zipfile.ZipFile(archive) as z:
