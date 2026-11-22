@@ -1,12 +1,12 @@
 {
   "language": "EN",
   "title": "User handbook",
-  "subtitle": "Digital-camera exposure for film scanning",
+  "subtitle": "Exposure and noise evaluation for camera scanning.",
   "date": "22 November 2026",
   "pages": [
     {
-      "title": "Why use Camera-41_exp?",
-      "intro": "Camera-41_exp helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.",
+      "title": "Why use FilmScan Tuner?",
+      "intro": "Formerly Camera-41_exp. FilmScan Tuner helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.",
       "sections": [
         [
           "Avoid clipping in the RAW capture",
@@ -18,11 +18,11 @@
         ],
         [
           "What it does not do",
-          "Camera-41_exp can optionally estimate temporal dark noise, dark-noise-limited S/N and noise-limited bits after exposure selection. It does not measure total illuminated S/N or control the camera. The exposure choice concerns the digital capture, not the original analog film exposure."
+          "FilmScan Tuner can optionally estimate temporal dark noise, dark-noise-limited S/N and noise-limited bits after exposure selection. It does not measure total illuminated S/N or control the camera. The exposure choice concerns the digital capture, not the original analog film exposure."
         ],
         [
           "Quick start",
-          "1. Open Camera-41_exp from Applications.\n2. Use Add FB+F RAWs… to load an exposure bracket of the same empty film sample.\n3. Enter Light setup and Film base + fog. Tick Same FB+F sample in all RAWs.\n4. Press Analyse RAW images and read Results and Exposure comparison.\n5. Verify the selected time with a fresh capture."
+          "1. Open FilmScan Tuner from Applications.\n2. Use Add FB+F RAWs… to load an exposure bracket of the same empty film sample.\n3. Enter Light setup and Film base + fog. Tick Same FB+F sample in all RAWs.\n4. Press Analyse RAW images and read Results and Exposure comparison.\n5. Verify the selected time with a fresh capture."
         ]
       ]
     },
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Open the disk image",
-          "Open Camera-41_exp-1.1.0-python-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
+          "Open FilmScan-Tuner-1.1.1-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
         ],
         [
           "2. Open the app",
@@ -128,11 +128,11 @@
     },
     {
       "title": "After the test, logging and help",
-      "intro": "Camera-41_exp works independently. No JSON file is transferred from Camera-41_exp to PRE or NEG, and neither program needs to be open to use it.",
+      "intro": "FilmScan Tuner works independently. No JSON file is transferred from FilmScan Tuner to PRE or NEG, and neither program needs to be open to use it.",
       "sections": [
         [
           "Continue in PRE with current captures",
-          "Set the digital camera to the chosen time yourself. Capture the current film's empty FB+F frame and two separate dark RAWs with the same camera, ISO, shutter time and aperture. For the dark frames, block light from reaching the sensor and use relevant matching capture conditions.\nLoad those files directly in PRE tab 7. FB+F and the dark pair can be inspected with a common sensor area and used for noise and S/N measurement. PRE includes its measured result in the film characterisation delivered to NEG. Camera-41_exp does not export that measurement and need not be installed for PRE to work."
+          "Set the digital camera to the chosen time yourself. Capture the current film's empty FB+F frame and two separate dark RAWs with the same camera, ISO, shutter time and aperture. For the dark frames, block light from reaching the sensor and use relevant matching capture conditions.\nLoad those files directly in PRE tab 7. FB+F and the dark pair can be inspected with a common sensor area and used for noise and S/N measurement. PRE includes its measured result in the film characterisation delivered to NEG. FilmScan Tuner does not export that measurement and need not be installed for PRE to work."
         ],
         [
           "If something looks wrong",
@@ -140,17 +140,17 @@
         ],
         [
           "Log and retained information",
-          "Open log opens the local diagnostic log. The standalone app writes ~/Library/Logs/Camera-41_exp/camera41_exp.jsonl. Source runs write logs/camera41_exp.jsonl. The app remembers the last RAW folder. It opens with an empty bracket after restart."
+          "Open log opens the local diagnostic log. The standalone app writes ~/Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl. Source runs write logs/filmscan_tuner.jsonl. The app remembers the last RAW folder. It opens with an empty bracket after restart."
         ],
         [
           "Requirements, edition and licences",
-          "This handbook covers the Python app in v1.1.0. Camera-41_exp uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
+          "This handbook covers the Python app in v1.1.1. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
         ]
       ]
     }
   ],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
-  "github": "https://github.com/chto0703009/Camera-41_exp"
+  "github": "https://github.com/chto0703009/FilmScan-Tuner"
 }

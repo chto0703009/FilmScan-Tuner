@@ -28,7 +28,7 @@ MACH_O = {bytes.fromhex(magic) for magic in (
 )}
 SOURCE_FILES = (
     "README.md", "CHANGELOG.md", "INSTALL.md", "RELEASE_NOTES.md", "VERSION", "LICENSE",
-    "LICENSE_NOTICE.md", "requirements-app.txt", "Start Camera-41_exp.command",
+    "LICENSE_NOTICE.md", "requirements-app.txt", "Start FilmScan Tuner.command",
     "resources/Camera41Exp.icns", "tests/test_exposure.py", "tests/test_noise.py",
     "tools/build_exp_python_app.py", "tools/build_dmg.py", "tools/build_raw_probe.sh",
     "tools/verify_raw_probe_build.py", "tools/camera41_raw_probe.cpp",
@@ -54,6 +54,8 @@ def app_source_digest():
 
 def audit(app, cpu, minimum, version):
     info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
+    assert info["CFBundleDisplayName"] == "FilmScan Tuner" and info["CFBundleName"] == "FilmScan Tuner"
+    assert info["CFBundleExecutable"] == "FilmScan Tuner"
     assert info["LSMinimumSystemVersion"] == minimum and info["CFBundleShortVersionString"] == version, info
     if info.get("Camera41SourceSHA256") != app_source_digest():
         raise ValueError(f"{app.name} was built from other sources. Rebuild before packaging.")
@@ -95,7 +97,7 @@ def main():
     version = (ROOT / "VERSION").read_text().strip()
     release = ROOT / "dist" / f"v{version}"
     release.mkdir(parents=True, exist_ok=True)
-    target = release / f"Camera-41_exp-{version}-python-macos.dmg"
+    target = release / f"FilmScan-Tuner-{version}-macos.dmg"
     with TemporaryDirectory(dir=release) as folder:
         folder = Path(folder)
         content = folder / "content"
@@ -105,24 +107,24 @@ def main():
             shutil.copy2(ROOT / name, content / name)
         documents = content / "Documentation"
         documents.mkdir()
-        for pdf in sorted((ROOT / "output/pdf").glob("Camera41_exp_*.pdf")):
+        for pdf in sorted((ROOT / "output/pdf").glob("FilmScan_Tuner_*.pdf")):
             shutil.copy2(pdf, documents / pdf.name)
         (content / "Read Me.txt").write_text(
-            f"Camera-41_exp {version}\n\nApple Silicon: macOS 14 Sonoma or later.\n"
+            f"FilmScan Tuner {version}\nExposure and noise evaluation for camera scanning.\n\nApple Silicon: macOS 14 Sonoma or later.\n"
             "Intel: macOS 13 Ventura or later.\n\nDrag the app for your Mac to Applications. "
             "The apps are ad hoc signed and have no Apple notarisation.\n"
             "The Intel build was tested through Rosetta on Apple Silicon. "
             "Physical Intel and Ventura testing remain outstanding.\n"
         )
-        with zipfile.ZipFile(content / "Camera-41_exp-Python-source.zip", "w", zipfile.ZIP_DEFLATED) as archive:
+        with zipfile.ZipFile(content / "FilmScan-Tuner-Python-source.zip", "w", zipfile.ZIP_DEFLATED) as archive:
             files = list(SOURCE_FILES)
             for source in SOURCE_FOLDERS:
                 files.extend(str(file.relative_to(ROOT)) for file in sorted((ROOT / source).rglob("*"))
                              if file.is_file() and "__pycache__" not in file.parts)
             for file in files:
                 archive.write(ROOT / file, file)
-            arm_probe = BUILDS / "arm64/dist/Camera-41_exp.app/Contents/Resources/tools/bin/camera41_raw_probe_arm64"
-            intel_probe = BUILDS / "x86_64/dist/Camera-41_exp.app/Contents/Resources/tools/bin/camera41_raw_probe_x86_64"
+            arm_probe = BUILDS / "arm64/dist/FilmScan Tuner.app/Contents/Resources/tools/bin/camera41_raw_probe_arm64"
+            intel_probe = BUILDS / "x86_64/dist/FilmScan Tuner.app/Contents/Resources/tools/bin/camera41_raw_probe_x86_64"
             archive.write(arm_probe, "tools/bin/camera41_raw_probe_arm64")
             archive.write(intel_probe, "tools/bin/camera41_raw_probe_x86_64")
         for source in options.libraw_source:
@@ -130,17 +132,17 @@ def main():
 
         def check_build(item):
             cpu, label, minimum = item
-            app = content / f"Camera-41_exp - {label}.app"
-            subprocess.run(["ditto", BUILDS / cpu / "dist/Camera-41_exp.app", app], check=True)
+            app = content / f"FilmScan Tuner - {label}.app"
+            subprocess.run(["ditto", BUILDS / cpu / "dist/FilmScan Tuner.app", app], check=True)
             result = audit(app, cpu, minimum, version)
-            subprocess.run(["/usr/bin/arch", f"-{cpu}", app / "Contents/MacOS/Camera-41_exp",
+            subprocess.run(["/usr/bin/arch", f"-{cpu}", app / "Contents/MacOS/FilmScan Tuner",
                             "--smoke-test", *raws, *(["--smoke-dark", *darks] if darks else [])], cwd=folder, check=True)
             return cpu, result
 
         with ThreadPoolExecutor(max_workers=2) as pool:
             audits = dict(pool.map(check_build, APPS))
         image = folder / target.name
-        subprocess.run(["hdiutil", "create", "-quiet", "-volname", f"Camera-41_exp {version}",
+        subprocess.run(["hdiutil", "create", "-quiet", "-volname", f"FilmScan Tuner {version}",
                         "-srcfolder", content, "-format", "UDZO", image], check=True)
         subprocess.run(["hdiutil", "verify", "-quiet", image], check=True)
         os.replace(image, target)

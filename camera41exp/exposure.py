@@ -82,7 +82,7 @@ def raw_probe():
                                     capture_output=True, text=True, check=True).stdout
             if "Mach-O" in slices and cpu in slices:
                 return ("/usr/bin/arch", f"-{cpu}", str(path))
-    raise FileNotFoundError(f"Camera-41_exp requires a {cpu} LibRaw probe in {base.parent}.")
+    raise FileNotFoundError(f"FilmScan Tuner requires a {cpu} LibRaw probe in {base.parent}.")
 
 
 def source_record(path):

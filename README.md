@@ -1,14 +1,18 @@
-# Camera-41_exp v1.1.0
+# FilmScan Tuner v1.1.1
+
+*Exposure and noise evaluation for camera scanning.*
+
+Formerly Camera-41_exp. FilmScan Tuner supports both C-41 colour and black-and-white negatives.
 
 Shutter times below one second use reciprocal notation (for example 1/10 s); times of one second or longer use two decimal places (1.00 s). Display rounding does not change measurement or metadata matching.
 
-Camera-41_exp helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.
+FilmScan Tuner helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.
 
-[English summary and installation (PDF)](output/pdf/Camera41_exp_Summary_EN.pdf)
+[English summary and installation (PDF)](output/pdf/FilmScan_Tuner_Summary_EN.pdf)
 
 ## Run the Python app on macOS
 
-Open the standalone `Camera-41_exp.app` built for your Mac (Apple Silicon or Intel). See [installation](INSTALL.md) and [release notes](RELEASE_NOTES.md).
+Open the standalone `FilmScan Tuner.app` built for your Mac (Apple Silicon or Intel). See [installation](INSTALL.md) and [release notes](RELEASE_NOTES.md).
 It includes Python, the native AppKit interface and the LibRaw probe and runs
 without MATLAB. The locally built app is ad hoc signed.
 
@@ -20,7 +24,7 @@ python3.13 -m venv .venv
 .venv/bin/python -m camera41exp.app
 ```
 
-You can then double-click `Start Camera-41_exp.command`. Select RAW files from
+You can then double-click `Start FilmScan Tuner.command`. Select RAW files from
 the file picker, preview one and drag to set a manual measurement area if
 needed. Results show the four Bayer channels, the bracket recommendation and
 the next step in PRE. The **Exposure comparison** tab plots signal and clipping
@@ -69,8 +73,8 @@ characterisation delivered to NEG.
 
 The last RAW folder is remembered. **Open log** opens the Python app's
 diagnostic log, including file choices, analyses and errors. The standalone
-app stores it in `~/Library/Logs/Camera-41_exp/camera41_exp.jsonl`. Source runs
-store it in `logs/camera41_exp.jsonl`.
+app stores it in `~/Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl`. Source runs
+store it in `logs/filmscan_tuner.jsonl`.
 
 A capture passes when every channel keeps at least 1/3 EV of headroom, has fewer than 0.01% of its values at the clipping reference and a median within 8 EV of it. Darker channels are marked LOW, so a dark frame cannot pass. The app asks for a review when the series is inconsistent, for example when a shorter time clips while a longer one passes.
 
@@ -80,16 +84,16 @@ Both interfaces use the bundled LibRaw probe. Original RAWs are unchanged. Autom
 
 ## Handbooks / Handböcker
 
-- [English handbook (PDF)](output/pdf/Camera41_exp_Handbook_EN.pdf)
-- [Svensk handbok (PDF)](output/pdf/Camera41_exp_Handbook_SV.pdf)
-The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.0 handbooks above for current installation and controls.
+- [English handbook (PDF)](output/pdf/FilmScan_Tuner_Handbook_EN.pdf)
+- [Svensk handbok (PDF)](output/pdf/FilmScan_Tuner_Handbook_SV.pdf)
+The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.1 handbooks above for current installation and controls.
 
 - [Arbetsinstruktion för digitaliseringsexponering (PDF, svenska)](output/pdf/Camera41_EXP_Digitaliseringsexponering_SV.pdf) — FB+F-serie, exponeringsval och överlämning till Camera-41_pre.
 - [Digitisation exposure work instruction (PDF, English)](output/pdf/Camera41_EXP_Digitisation_Exposure_EN.pdf)
 
 Editable sources are in `docs/handbook/handbook_sv.json` and `handbook_en.json`. Rebuild both PDFs with `python tools/build_handbooks.py` (requires reportlab). The handbooks describe why FB+F exposure is used to avoid clipping, capture setup, automatic/manual areas, results, standalone operation and logging.
 
-[Sammanfattning på svenska (PDF)](output/pdf/Camera41_exp_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.0.
+[Sammanfattning på svenska (PDF)](output/pdf/FilmScan_Tuner_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.1.
 
 ## Legacy MATLAB Python environment
 

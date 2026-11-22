@@ -1,3 +1,15 @@
+# FilmScan Tuner v1.1.1 - 22 November 2026
+
+*Exposure and noise evaluation for camera scanning.*
+
+Camera-41_exp is now **FilmScan Tuner**. The new name covers camera scanning of both C-41 colour and black-and-white negatives. This release updates the macOS app, menus, installer, source launcher, English and Swedish guides, and GitHub project to the new name. The exposure and dark-noise calculations are unchanged from v1.1.0.
+
+The DMG includes separate Apple Silicon (macOS 14+) and Intel (macOS 13+) apps. Both builds run the Gold 200 exposure and matched 1/10 s dark-noise tests; the Intel build is tested through Rosetta. A test on a physical Intel Mac will be performed later. Apps are ad hoc signed without Apple notarisation.
+
+Use the new app from Applications. Its diagnostic log is `~/Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl`. The internal Python package and macOS bundle identifier remain compatible with the previous app. Old versions remain available in release history.
+
+---
+
 # Camera-41_exp v1.1.0 - 22 November 2026
 
 Shutter times below one second use reciprocal notation (for example 1/10 s); times of one second or longer use two decimal places (1.00 s). Display rounding does not change measurement or metadata matching.

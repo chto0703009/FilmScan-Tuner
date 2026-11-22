@@ -1,10 +1,10 @@
-# Camera-41_exp licence notice
+# FilmScan Tuner licence notice
 
 Copyright (c) 2026 Christer Törnkvist.
 
 SPDX-License-Identifier: GPL-3.0-or-later
 
-Camera-41_exp's own program code and documentation are free and open-source
+FilmScan Tuner's own program code and documentation are free and open-source
 software under the GNU General Public License, version 3 or (at your option)
 any later version. The full licence text is in [LICENSE](LICENSE).
 
@@ -14,7 +14,7 @@ see [third_party/licenses](third_party/licenses). MATLAB requires its own licenc
 and is not distributed under this project's GPL. Imported photographs and private
 roll data do not acquire a new licence merely by being processed by the app.
 
-Repository access and licensing are separate: the repository is currently private.
+The source repository is public.
 
 Christer Törnkvist - christer@borgasundsfotografiska.se
-https://github.com/chto0703009/Camera-41_exp
+https://github.com/chto0703009/FilmScan-Tuner

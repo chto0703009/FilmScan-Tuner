@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Native macOS interface for Camera-41_exp."""
+"""Native macOS interface for FilmScan Tuner."""
 
 import argparse
 from dataclasses import asdict
@@ -25,12 +25,12 @@ from camera41exp.exposure import (
     is_raw, raw_probe, analyse_noise,
 )
 
-APP_NAME = "Camera-41_exp"
+APP_NAME = "FilmScan Tuner"
 
 VERSION = (ROOT / "VERSION").read_text().strip()
 PREFERENCES = A.NSUserDefaults.standardUserDefaults()
-LOG_PATH = (Path.home() / "Library/Logs/Camera-41_exp/camera41_exp.jsonl"
-            if getattr(sys, "frozen", False) else ROOT / "logs/camera41_exp.jsonl")
+LOG_PATH = (Path.home() / "Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl"
+            if getattr(sys, "frozen", False) else ROOT / "logs/filmscan_tuner.jsonl")
 HANDOFF = (
     "To evaluate dark noise here, enable Evaluate dark noise (optional), add at "
     "least two matching dark RAWs and press Evaluate noise. PRE remains an "
@@ -48,9 +48,10 @@ SELECTION_MESSAGES = {
         "Check that the light, sample and camera settings were unchanged, then repeat the series."
     ),
 }
-WELCOME_TITLE = "Find the shutter time for digitising film negatives"
+WELCOME_TITLE = "FilmScan Tuner"
 WELCOME = (
-    "Camera-41_exp compares RAW captures of clear film base + fog (FB+F) from a VALOI setup. "
+    "Exposure and noise evaluation for camera scanning.\n\n"
+    "FilmScan Tuner compares RAW captures of clear film base + fog (FB+F) from a VALOI setup. "
     "It shows which shutter time gives a strong signal with room before a sensor channel clips. "
     "Your RAW files are never changed.\n"
     "What to do\n"
@@ -114,7 +115,7 @@ def log(event, **details):
             stream.write(json.dumps({"Timestamp": datetime.now().astimezone().isoformat(),
                                      "Event": event, **details}, ensure_ascii=False) + "\n")
     except OSError as error:
-        print(f"Camera-41_exp log: {error}", file=sys.stderr)
+        print(f"FilmScan Tuner log: {error}", file=sys.stderr)
 
 
 def native_image(image):
@@ -393,7 +394,7 @@ class Controller(NSObject):
             A.NSWindowStyleMaskTitled | A.NSWindowStyleMaskClosable | A.NSWindowStyleMaskResizable,
             A.NSBackingStoreBuffered, False,
         )
-        self.window.setTitle_(f"Camera-41_exp {VERSION} — Digital camera setup")
+        self.window.setTitle_(f"FilmScan Tuner {VERSION}")
         self.window.setMinSize_((900, 640))
         self.window.setDelegate_(self)
         self.window.setReleasedWhenClosed_(False)

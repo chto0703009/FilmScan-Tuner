@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Build a self-contained Camera-41_exp macOS app for the interpreter's CPU."""
+"""Build a self-contained FilmScan Tuner macOS app for the interpreter's CPU."""
 
 import argparse
 from importlib.metadata import distribution
@@ -58,7 +58,7 @@ def main():
             if ".dist-info/" in str(file) and file.name.upper().startswith(("LICENSE", "COPYING", "NOTICE")):
                 files.append((info.locate_file(file), f"Notices/{package}"))
     args = [
-        "--noconfirm", "--windowed", "--name", "Camera-41_exp",
+        "--noconfirm", "--windowed", "--name", "FilmScan Tuner",
         "--icon", str(ROOT / "resources/Camera41Exp.icns"),
         "--target-architecture", cpu, "--osx-bundle-identifier", "se.camera41.exp",
         "--paths", str(ROOT), "--workpath", str(output / "build"),
@@ -68,13 +68,14 @@ def main():
         args.extend(("--add-data", f"{source}:{destination}"))
     source_digest = app_source_digest()
     run([*args, str(ROOT / "camera41exp/app.py")])
-    app = output / "dist/Camera-41_exp.app"
+    app = output / "dist/FilmScan Tuner.app"
     info = app / "Contents/Info.plist"
     metadata = plistlib.loads(info.read_bytes())
     if source_digest != app_source_digest():
         raise SystemExit("Application sources changed during the build. Run the build again.")
     metadata.update(Camera41SourceSHA256=source_digest, CFBundleVersion=version, CFBundleShortVersionString=version,
-                    LSMinimumSystemVersion=minimum)
+                    LSMinimumSystemVersion=minimum, CFBundleDisplayName="FilmScan Tuner",
+                    CFBundleName="FilmScan Tuner", CFBundleGetInfoString="Exposure and noise evaluation for camera scanning.")
     info.write_bytes(plistlib.dumps(metadata))
     subprocess.run(["codesign", "--force", "--sign", "-", str(app)], check=True)
 
