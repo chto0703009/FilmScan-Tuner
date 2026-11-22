@@ -1,6 +1,8 @@
-# FilmScan Tuner v1.1.1
+# FilmScan Tuner v1.1.2
 
 *Exposure and noise evaluation for camera scanning.*
+
+Designed for VALOI hardware with a CS Light light table, but not limited to this equipment; other camera-scanning setups can also be used.
 
 Formerly Camera-41_exp. FilmScan Tuner supports both C-41 colour and black-and-white negatives.
 
@@ -88,14 +90,14 @@ Both interfaces use the bundled LibRaw probe. Original RAWs are unchanged. Autom
 
 - [English handbook (PDF)](output/pdf/FilmScan_Tuner_Handbook_EN.pdf)
 - [Svensk handbok (PDF)](output/pdf/FilmScan_Tuner_Handbook_SV.pdf)
-The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.1 handbooks above for current installation and controls.
+The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.2 handbooks above for current installation and controls.
 
 - [Arbetsinstruktion för digitaliseringsexponering (PDF, svenska)](output/pdf/Camera41_EXP_Digitaliseringsexponering_SV.pdf) — FB+F-serie, exponeringsval och överlämning till Camera-41_pre.
 - [Digitisation exposure work instruction (PDF, English)](output/pdf/Camera41_EXP_Digitisation_Exposure_EN.pdf)
 
 Editable sources are in `docs/handbook/handbook_sv.json` and `handbook_en.json`. Rebuild both PDFs with `python tools/build_handbooks.py` (requires reportlab). The handbooks describe why FB+F exposure is used to avoid clipping, capture setup, automatic/manual areas, results, standalone operation and logging.
 
-[Sammanfattning på svenska (PDF)](output/pdf/FilmScan_Tuner_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.1.
+[Sammanfattning på svenska (PDF)](output/pdf/FilmScan_Tuner_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.2.
 
 ## Legacy MATLAB Python environment
 

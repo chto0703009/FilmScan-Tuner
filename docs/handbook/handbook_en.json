@@ -6,7 +6,7 @@
   "pages": [
     {
       "title": "Why use FilmScan Tuner?",
-      "intro": "Formerly Camera-41_exp. FilmScan Tuner helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.",
+      "intro": "Formerly Camera-41_exp. FilmScan Tuner helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened. Designed for VALOI hardware with a CS Light light table, but not limited to this equipment; other camera-scanning setups can also be used.",
       "sections": [
         [
           "Avoid clipping in the RAW capture",
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Open the disk image",
-          "Open FilmScan-Tuner-1.1.1-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
+          "Open FilmScan-Tuner-1.1.2-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
         ],
         [
           "2. Open the app",
@@ -144,12 +144,12 @@
         ],
         [
           "Requirements, edition and licences",
-          "This handbook covers the Python app in v1.1.1. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
+          "This handbook covers the Python app in v1.1.2. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
         ]
       ]
     }
   ],
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/FilmScan-Tuner"

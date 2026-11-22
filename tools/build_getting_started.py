@@ -53,7 +53,7 @@ def footer(canvas, doc):
 
 story = [p('FilmScan Tuner', 'brand'), p('Getting started', 'title'),
          p('Exposure and noise evaluation for camera scanning.', 'subtitle'),
-         p('Set your digital camera exposure for scanning C-41 colour or black-and-white negatives with a VALOI setup. The app evaluates RAW captures; you change the camera settings yourself.'), Spacer(1, 14)]
+         p('Set your digital camera exposure for scanning C-41 colour or black-and-white negatives using VALOI hardware with a CS Light light table, or another camera-scanning setup. The app is not limited to VALOI or CS Light; you set the camera yourself.'), Spacer(1, 14)]
 story += [
     step(1, 'Install and open',
          'Open the DMG and drag the app for your Mac to <b>Applications</b>: Apple Silicon (macOS 14+) or Intel (macOS 13+). Eject the DMG, then open FilmScan Tuner. Python and LibRaw are included; MATLAB is not required.'),

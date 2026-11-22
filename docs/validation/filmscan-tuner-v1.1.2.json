@@ -1,0 +1,16 @@
+{
+  "name": "FilmScan Tuner",
+  "version": "1.1.2",
+  "date": "2026-11-22",
+  "unit_tests": 56,
+  "result": "PASS",
+  "packaged_tests": {
+    "arm64": "PASS: Gold 200 exposure bracket, automatic area, preview, chart, two matched 1/10 s darks and noise report",
+    "x86_64": "PASS through Rosetta: same exposure and noise workflow"
+  },
+  "documentation": "Five guides, 15 pages total, rendered and visually checked. Getting Started remains one page. VALOI hardware with CS Light intended setup, not an equipment restriction.",
+  "dmg_verification": "hdiutil verified; mounted read-only and confirmed all five bundled PDFs match the outputs. Getting Started present in Documentation and linked in Read Me.",
+  "physical_intel": "Test on a physical Intel Mac will be performed later. macOS 13 not tested on hardware.",
+  "dmg_sha256": "bd175b2a7101917c29af288423806d245b71bb05480397eed6594fa049e94b78",
+  "signature": "ad hoc; no Apple notarisation"
+}

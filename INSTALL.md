@@ -1,8 +1,10 @@
-# FilmScan Tuner v1.1.1 installation
+# FilmScan Tuner v1.1.2 installation
 
 Exposure and noise evaluation for camera scanning.
 
-Open `FilmScan-Tuner-1.1.1-macos.dmg` from the v1.1.1 release assets.
+Designed for VALOI hardware with a CS Light light table, but not limited to this equipment; other camera-scanning setups can also be used.
+
+Open `FilmScan-Tuner-1.1.2-macos.dmg` from the v1.1.2 release assets.
 Drag **FilmScan Tuner - Apple Silicon.app** to Applications on an M-series
 Mac with macOS 14 Sonoma or later, or **FilmScan Tuner - Intel.app** on an Intel
 Mac with macOS 13 Ventura or later. Eject the disk image
@@ -11,7 +13,7 @@ MATLAB, Homebrew, PRE or NEG. The interface is in English.
 
 The apps are ad hoc signed. The disk image has no Apple notarisation.
 Compare the disk image against its accompanying SHA-256 file with
-`shasum -a 256 FilmScan-Tuner-1.1.1-macos.dmg`.
+`shasum -a 256 FilmScan-Tuner-1.1.2-macos.dmg`.
 
 ## First run
 

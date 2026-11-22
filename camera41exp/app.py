@@ -51,9 +51,10 @@ SELECTION_MESSAGES = {
 WELCOME_TITLE = "FilmScan Tuner"
 WELCOME = (
     "Exposure and noise evaluation for camera scanning.\n\n"
-    "FilmScan Tuner compares RAW captures of clear film base + fog (FB+F) from a VALOI setup. "
+    "FilmScan Tuner compares RAW captures of clear film base + fog (FB+F) from a camera-scanning setup. "
     "It shows which shutter time gives a strong signal with room before a sensor channel clips. "
-    "Your RAW files are never changed.\n"
+    "Designed for VALOI hardware with a CS Light light table, but not limited to this equipment. "
+    "Other camera-scanning setups can also be used. Your RAW files are never changed.\n"
     "What to do\n"
     "1.  Photograph the empty film base at several shutter times in 1/3 EV steps. "
     "Keep the camera, ISO, aperture and light the same, and save the captures as RAW files.\n"

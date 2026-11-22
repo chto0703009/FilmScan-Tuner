@@ -107,11 +107,15 @@ def main():
             shutil.copy2(ROOT / name, content / name)
         documents = content / "Documentation"
         documents.mkdir()
+        getting_started = ROOT / "output/pdf/FilmScan_Tuner_Getting_Started_EN.pdf"
+        if not getting_started.is_file():
+            raise FileNotFoundError("Build the Getting Started guide before packaging.")
         for pdf in sorted((ROOT / "output/pdf").glob("FilmScan_Tuner_*.pdf")):
             shutil.copy2(pdf, documents / pdf.name)
         (content / "Read Me.txt").write_text(
             f"FilmScan Tuner {version}\nExposure and noise evaluation for camera scanning.\n\nApple Silicon: macOS 14 Sonoma or later.\n"
-            "Intel: macOS 13 Ventura or later.\n\nDrag the app for your Mac to Applications. "
+            "Intel: macOS 13 Ventura or later.\n\nGetting started: Documentation/FilmScan_Tuner_Getting_Started_EN.pdf\n"
+            "Designed for VALOI hardware with a CS Light light table; other camera-scanning setups can also be used.\n\nDrag the app for your Mac to Applications. "
             "The apps are ad hoc signed and have no Apple notarisation.\n"
             "The Intel build was tested through Rosetta on Apple Silicon. "
             "Physical Intel and Ventura testing remain outstanding.\n"

@@ -1,3 +1,17 @@
+# FilmScan Tuner v1.1.2 - 22 November 2026
+
+*Exposure and noise evaluation for camera scanning.*
+
+Designed for VALOI hardware with a CS Light light table, but not limited to this equipment; other camera-scanning setups can also be used. The welcome screen, GitHub description and English and Swedish guides now explain this intended setup.
+
+The DMG now includes the one-page English **Getting Started** guide in its Documentation folder, alongside the English and Swedish handbooks and summaries. The installer Read Me points directly to the guide.
+
+Separate standalone Apple Silicon (macOS 14+) and Intel (macOS 13+) apps include Python and LibRaw. Exposure and dark-noise calculations are unchanged. Both builds are checked with the Gold 200 exposure bracket and matched 1/10 s dark frames, with Intel tested through Rosetta. Testing on a physical Intel Mac will be performed later; macOS 13 has not been tested on hardware. Apps are ad hoc signed without Apple notarisation.
+
+Download the DMG and accompanying SHA-256 checksum below. The five PDF guides are also available separately.
+
+---
+
 # FilmScan Tuner v1.1.1 - 22 November 2026
 
 *Exposure and noise evaluation for camera scanning.*
