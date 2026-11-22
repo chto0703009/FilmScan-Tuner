@@ -1,3 +1,17 @@
+# Camera-41_exp v1.1.0
+
+Camera-41_exp helps set the digital-camera exposure for scanning C-41 colour and black-and-white negatives with a VALOI setup. Measure clear film base plus fog to obtain a strong signal with headroom before clipping.
+
+This release adds optional dark-noise evaluation after selecting a measured passing shutter time. Add at least two independent dark RAWs (8-16 recommended) taken at that time, with matching camera, ISO and aperture. The app checks metadata and duplicates, measures temporal noise in the same sensor area, and reports per-channel S/N, signal bits and effective range bits.
+
+S/N is limited to measured dark noise and excludes photon shot noise. Effective range bits describe noise-limited range, not ADC ENOB or nominal camera bit depth. The updated English and Swedish handbooks explain capture settings, controls, formulas and the Gold 200 example.
+
+The DMG contains separate standalone Apple Silicon (macOS 14+) and Intel (macOS 13+) apps with Python and LibRaw. MATLAB is not required. The Gold 200 exposure and dark-noise workflow is tested on Apple Silicon and the Intel build through Rosetta. Testing on a physical Intel Mac will be performed later; macOS 13 has not been tested on hardware. Apps are ad hoc signed and are not Apple-notarised.
+
+See INSTALL.md and the bundled guides. Verify the DMG with the accompanying SHA-256 checksum.
+
+---
+
 # Camera-41_exp v1.0.1
 
 Camera-41_exp helps set the digital camera exposure when digitising C-41 colour and black-and-white negatives with a VALOI setup. It compares RAW exposures of clear film base plus fog to find a strong signal with headroom before clipping.

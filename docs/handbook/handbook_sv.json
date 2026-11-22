@@ -2,7 +2,7 @@
   "language": "SV",
   "title": "Handbok",
   "subtitle": "Digitalkamerans exponering vid filminläsning",
-  "date": "13 november 2026",
+  "date": "22 november 2026",
   "pages": [
     {
       "title": "Varför använda Camera-41_exp?",
@@ -18,7 +18,7 @@
         ],
         [
           "Vad appen inte gör",
-          "Camera-41_exp mäter inte mörkerbrus eller fullständigt S/N och skapar ingen produktionskvalificering. Den styr inte kameran. Exponeringsvalet gäller digitalkameran vid inläsningen, inte den analoga exponeringen när filmen togs."
+          "Camera-41_exp kan efter exponeringsvalet mäta temporalt mörkerbrus, mörkerbrusbegränsat S/N och brusbegränsade bitvärden. Appen mäter inte totalt S/N i belysta bilder och styr inte kameran. Exponeringsvalet gäller digitalkameran, inte filmens ursprungliga analoga exponering."
         ],
         [
           "Snabbstart",
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Öppna skivavbilden",
-          "Öppna Camera-41_exp-1.0.1-python-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
+          "Öppna Camera-41_exp-1.1.0-python-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
         ],
         [
           "2. Öppna appen",
@@ -40,7 +40,7 @@
         ],
         [
           "Verifiering",
-          "Hela Gold 200-flödet med fyra filer provades på Apple Silicon. Tidigare Intel-byggen provades via Rosetta. Prov på en fysisk Intel-Mac återstår."
+          "Gold 200-flödet för exponering och mörkerbrus testas på Apple Silicon och Intelbygget via Rosetta. Test på en fysisk Intel-Mac görs senare; macOS 13 är inte testat på fysisk hårdvara."
         ],
         [
           "RAW-filer och diagnostik",
@@ -88,7 +88,7 @@
         ],
         [
           "Diagram och tabell",
-          "Exposure comparison visar slutartider i 1/3 EV-steg med kamerans beteckningar, till exempel 1/20, 1/15 och 1/10. Övre diagrammet visar median RAW-signal över svartnivån i sensorkoder. Nedre diagrammet visar marginalen till RAW-linjäritetsgränsen i EV. Vid 0 EV når den uppmätta percentilen gränsen. Den streckade linjen vid 1/3 EV markerar minsta marginal för PASS. Results visar fil, tid, status, signal, marginal och andel vid eller över gränsen per kanal."
+          "Exposure comparison visar slutartider i 1/3 EV-steg med kamerans beteckningar, till exempel 1/20, 1/15 och 1/10. Övre diagrammet visar median RAW-signal över svartnivån i sensorkoder. Nedre diagrammet visar marginalen till RAW-linjäritetsgränsen i EV. Vid 0 EV når den uppmätta percentilen gränsen. Den streckade linjen vid 1/3 EV markerar minsta marginal för PASS. Results visar fil, tid, status, signal, marginal och andel vid eller över gränsen per kanal. Tider under en sekund visas som bråk, exempelvis 1/10 s, helst med heltal i nämnaren. Tider från en sekund visas med två decimaler, exempelvis 1.00 s. Endast visningen avrundas."
         ],
         [
           "Förslag är inte alltid ett färdigt val",
@@ -97,6 +97,32 @@
         [
           "Välj tid med marginal",
           "Choose a measured time listar tider där alla upprepningar klarade klippkriterierna. Granska en eventuell proportionalitetsvarning innan du använder kandidaten. Kontrollera vald tid med en ny FB+F-bild. Vid motstridiga resultat ber appen dig ta om serien innan du väljer en tid."
+        ]
+      ]
+    },
+    {
+      "title": "Valfri mätning av mörkerbrus",
+      "intro": "Gör exponeringsanalysen först och ta sedan mörkerbilder vid den valda tiden.",
+      "sections": [
+        [
+          "1. Utvärdera exponeringen först",
+          "Analysera FB+F-serien, granska eventuell proportionalitetsvarning och välj en godkänd tid i Choose a measured time. Först därefter aktiveras bruskontrollerna. Under analysen behöver du inte trycka någon tangent eller göra något med kameran. Vänta på statusmeddelandet."
+        ],
+        [
+          "2. Ta och lägg till mörkerbilder",
+          "Markera Evaluate dark noise (optional). Ta minst två oberoende mörker-RAW; 8-16 rekommenderas för en stabilare skattning. Sätt på objektivlock och hindra ljusläckage. Behåll samma kamera, ISO, slutartid och bländare samt liknande sensortemperatur. Stäng av kamerans brusreducering vid lång exponering. Välj flera filer med Add dark RAWs… och tryck Evaluate noise."
+        ],
+        [
+          "3. Matchning och mätning",
+          "Appen jämför slutartiden med vald FB+F-exponering och kontrollerar kamera inklusive serienummer, ISO, bländare och sensormått. Upprepade filer och omdöpta kopior avvisas. För stark mörkersignal avvisas. Du måste själv kontrollera temperatur och att bilderna verkligen tagits i mörker. Samma sensorområde används för separata R-, G1-, G2- och B-kanaler. Ändrad vald tid eller analysinställning tömmer mörkerresultatet."
+        ],
+        [
+          "4. Läs Dark noise",
+          "Bruset är kvadratroten av medelvärdet av varje pixels stickprovsvarians över mörkerbilderna. Stabila rumsliga avvikelser faller bort. Signalen är medianen i FB+F efter att mörkerbildernas medelbild dragits bort. S/N = signal / brus; S/N i dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(användbart RAW-kodomfång / brus). Vid oupplöst nollbrus eller icke-positiv signal visas inget numeriskt förhållande."
+        ],
+        [
+          "5. Tolkning och exempel",
+          "Detta är ett S/N begränsat av mörkerbruset; fotonbrus ingår inte. Effective range bits beskriver brusbegränsat omfång och är inte ADC ENOB eller kamerans angivna bitdjup. Totalt S/N i belysta bilder kräver upprepade belysta exponeringar. Gold 200-testet vid 1/10 s med två matchande mörkerbilder gav cirka 58-64 dB S/N, 9,6-10,6 signalbitar och 11,1 effektiva omfångsbitar beroende på kanal. Rapport och källfilernas kontrollsummor sparas i den lokala loggen."
         ]
       ]
     },
@@ -118,12 +144,12 @@
         ],
         [
           "Krav, version och licenser",
-          "Handboken gäller Pythonappen i v1.0.1. Camera-41_exp använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
+          "Handboken gäller Pythonappen i v1.1.0. Camera-41_exp använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
         ]
       ]
     }
   ],
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/Camera-41_exp"

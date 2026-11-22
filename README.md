@@ -1,4 +1,6 @@
-# Camera-41_exp v1.0.1
+# Camera-41_exp v1.1.0
+
+Shutter times below one second use reciprocal notation (for example 1/10 s); times of one second or longer use two decimal places (1.00 s). Display rounding does not change measurement or metadata matching.
 
 Camera-41_exp helps set the digital camera exposure when digitising C-41 colour and black-and-white (B&W) film negatives with a VALOI setup. At a fixed aperture, it compares RAW captures of clear film base plus fog to find a shutter speed that gives a strong signal with room before clipping. Too much exposure can clip a sensor channel. Too little leaves a weak signal, making noise more visible when the scan is brightened.
 
@@ -39,7 +41,31 @@ creates the release disk image under `dist/`.
 
 Add blank film base + fog RAWs at different shutter times, document the light/sample and analyse. The app selects an edge-safe central area, checks for unexpected structure and compares RAW signal and clipping margin. A yellow region is shown for inspection or adjustment when needed. Choose a measured passing time in the list.
 
-Camera-41_exp does not export a JSON handoff. At the chosen time, capture the current film's empty FB+F frame and two independent dark RAWs with the same camera, ISO, shutter and aperture. Load these in PRE tab 7 for signal/noise measurement. PRE includes those measured results in the film characterisation for NEG.
+After exposure analysis, choose a measured passing shutter time and enable
+**Evaluate dark noise (optional)**. Capture at least two independent dark RAWs
+(8–16 recommended) with the lens capped, at the same camera temperature, ISO,
+aperture and shutter time. Disable in-camera long-exposure noise reduction.
+Use **Add dark RAWs…** to load multiple files, then **Evaluate noise**.
+
+Every dark RAW is checked against the selected FB+F capture's camera serial,
+ISO, shutter time, aperture and sensor dimensions. Duplicate content and
+excessive signal in a dark capture stop the analysis. Changing exposure settings,
+the selected time or the measurement area clears the dark evaluation.
+
+**Dark noise** shows per-channel single-frame temporal noise, dark-noise-limited
+S/N as a ratio and dB, signal-above-noise bits and effective range bits.
+Temporal noise is the square root of the mean per-pixel sample variance across
+dark frames. Fixed spatial offsets cancel in this temporal variance. Signal is
+the median FB+F signal after subtracting the mean dark image, in sensor codes.
+Range bits = log2(clipping-reference code range / dark noise).
+Signal bits = log2(signal / dark noise). Values are unresolved when measured
+variance is zero. Negative values after black subtraction are retained for this
+measurement. Repeated illuminated captures are needed to measure photon shot
+noise and total illuminated S/N. ADC ENOB is outside this measurement.
+
+The noise report and input SHA-256 values are recorded in the local log.
+Current FB+F and dark captures can also be loaded in PRE tab 7 for film
+characterisation delivered to NEG.
 
 The last RAW folder is remembered. **Open log** opens the Python app's
 diagnostic log, including file choices, analyses and errors. The standalone
@@ -56,14 +82,14 @@ Both interfaces use the bundled LibRaw probe. Original RAWs are unchanged. Autom
 
 - [English handbook (PDF)](output/pdf/Camera41_exp_Handbook_EN.pdf)
 - [Svensk handbok (PDF)](output/pdf/Camera41_exp_Handbook_SV.pdf)
-The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.0.1 handbooks above for current installation and controls.
+The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.0 handbooks above for current installation and controls.
 
 - [Arbetsinstruktion för digitaliseringsexponering (PDF, svenska)](output/pdf/Camera41_EXP_Digitaliseringsexponering_SV.pdf) — FB+F-serie, exponeringsval och överlämning till Camera-41_pre.
 - [Digitisation exposure work instruction (PDF, English)](output/pdf/Camera41_EXP_Digitisation_Exposure_EN.pdf)
 
 Editable sources are in `docs/handbook/handbook_sv.json` and `handbook_en.json`. Rebuild both PDFs with `python tools/build_handbooks.py` (requires reportlab). The handbooks describe why FB+F exposure is used to avoid clipping, capture setup, automatic/manual areas, results, standalone operation and logging.
 
-[Sammanfattning på svenska (PDF)](output/pdf/Camera41_exp_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.0.1.
+[Sammanfattning på svenska (PDF)](output/pdf/Camera41_exp_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.0.
 
 ## Legacy MATLAB Python environment
 

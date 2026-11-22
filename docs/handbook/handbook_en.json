@@ -2,7 +2,7 @@
   "language": "EN",
   "title": "User handbook",
   "subtitle": "Digital-camera exposure for film scanning",
-  "date": "13 November 2026",
+  "date": "22 November 2026",
   "pages": [
     {
       "title": "Why use Camera-41_exp?",
@@ -18,7 +18,7 @@
         ],
         [
           "What it does not do",
-          "Camera-41_exp does not measure dark noise or full S/N and does not create a production qualification. It does not control the camera. The exposure choice concerns the digital capture, not the original analog exposure when the film was photographed."
+          "Camera-41_exp can optionally estimate temporal dark noise, dark-noise-limited S/N and noise-limited bits after exposure selection. It does not measure total illuminated S/N or control the camera. The exposure choice concerns the digital capture, not the original analog film exposure."
         ],
         [
           "Quick start",
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Open the disk image",
-          "Open Camera-41_exp-1.0.1-python-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
+          "Open Camera-41_exp-1.1.0-python-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
         ],
         [
           "2. Open the app",
@@ -40,7 +40,7 @@
         ],
         [
           "Verification",
-          "The full four-file Gold 200 workflow was exercised on Apple Silicon. Earlier Intel builds were exercised through Rosetta. Physical Intel testing remains outstanding."
+          "The Gold 200 exposure and dark-noise workflow is tested on Apple Silicon and the Intel build through Rosetta. Testing on a physical Intel Mac will be performed later; macOS 13 has not been tested on hardware."
         ],
         [
           "RAW files and diagnostics",
@@ -88,7 +88,7 @@
         ],
         [
           "Plots and table",
-          "Exposure comparison uses 1/3 EV shutter steps and camera-style times such as 1/20, 1/15 and 1/10. The upper chart shows median RAW signal above black in sensor codes. The lower chart shows headroom before the RAW linearity limit in EV. At 0 EV the measured percentile reaches the limit. The dashed 1/3 EV line marks the minimum headroom for PASS. Results lists the file, time, status, signal, headroom and fraction at or above the limit for each channel."
+          "Exposure comparison uses 1/3 EV shutter steps and camera-style times such as 1/20, 1/15 and 1/10. The upper chart shows median RAW signal above black in sensor codes. The lower chart shows headroom before the RAW linearity limit in EV. At 0 EV the measured percentile reaches the limit. The dashed 1/3 EV line marks the minimum headroom for PASS. Results lists the file, time, status, signal, headroom and fraction at or above the limit for each channel. Times below one second are displayed as reciprocals, for example 1/10 s, preferably with an integer denominator. Times of one second or longer use two decimal places, for example 1.00 s. Only the display is rounded."
         ],
         [
           "A candidate may need more evidence",
@@ -97,6 +97,32 @@
         [
           "Choose a time with margin",
           "Choose a measured time lists the times for which all replicates passed the clipping criteria. Review any proportionality warning before using the candidate. Verify your chosen time with a fresh FB+F capture. If the results contradict each other, the app asks you to repeat the series before choosing a time."
+        ]
+      ]
+    },
+    {
+      "title": "Optional dark-noise measurement",
+      "intro": "Complete the exposure analysis before capturing dark frames at the selected time.",
+      "sections": [
+        [
+          "1. Evaluate exposure first",
+          "Analyse the FB+F bracket, review any proportionality warning, then select a passing time in Choose a measured time. Dark-noise controls become available only after this selection. No key press or camera action is needed while analysis runs. Wait for the status message."
+        ],
+        [
+          "2. Capture and add dark RAWs",
+          "Enable Evaluate dark noise (optional). Capture at least two independent dark RAWs; 8-16 are recommended for a steadier estimate. Cap the lens and prevent light leaks. Keep the same camera, ISO, shutter time and aperture, and a similar sensor temperature. Disable long-exposure noise reduction. Use Add dark RAWs… to select several files, then Evaluate noise."
+        ],
+        [
+          "3. Matching and measurement",
+          "The app checks the shutter time against the selected FB+F exposure, camera identity including serial number, ISO, aperture and sensor dimensions. Renamed copies and repeated files are rejected. An excessive dark signal is rejected. Temperature and physical darkness must be checked by the user. The same sensor area and separate R, G1, G2 and B channels are used. Changing the exposure selection or analysis settings clears the dark result."
+        ],
+        [
+          "4. Read Dark noise",
+          "Noise is the square root of the mean per-pixel sample variance across dark frames. Stable spatial offsets cancel. Signal is the median FB+F signal after subtraction of the mean dark image. S/N = signal / noise; S/N in dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(usable RAW code range / noise). Unresolved zero-noise or nonpositive-signal results are reported without a numeric ratio."
+        ],
+        [
+          "5. Scope and example",
+          "This is a dark-noise-limited S/N estimate, excluding photon shot noise. Effective range bits describe noise-limited range; they are not ADC ENOB or the camera bit-depth specification. Total illuminated S/N needs repeated illuminated captures. In the Gold 200 test at 1/10 s, two matching darks gave about 58-64 dB S/N, 9.6-10.6 signal bits and 11.1 effective range bits, depending on channel. The report and source hashes are retained in the local log."
         ]
       ]
     },
@@ -118,12 +144,12 @@
         ],
         [
           "Requirements, edition and licences",
-          "This handbook covers the Python app in v1.0.1. Camera-41_exp uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
+          "This handbook covers the Python app in v1.1.0. Camera-41_exp uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
         ]
       ]
     }
   ],
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/Camera-41_exp"

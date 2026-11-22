@@ -29,7 +29,7 @@ MACH_O = {bytes.fromhex(magic) for magic in (
 SOURCE_FILES = (
     "README.md", "CHANGELOG.md", "INSTALL.md", "RELEASE_NOTES.md", "VERSION", "LICENSE",
     "LICENSE_NOTICE.md", "requirements-app.txt", "Start Camera-41_exp.command",
-    "resources/Camera41Exp.icns", "tests/test_exposure.py",
+    "resources/Camera41Exp.icns", "tests/test_exposure.py", "tests/test_noise.py",
     "tools/build_exp_python_app.py", "tools/build_dmg.py", "tools/build_raw_probe.sh",
     "tools/verify_raw_probe_build.py", "tools/camera41_raw_probe.cpp",
     "tools/build_handbooks.py", "tools/build_quick_guide.py", "tools/build_quick_guide_en.py",
@@ -84,12 +84,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--smoke-raw", nargs="+", type=Path, required=True, metavar="RAW",
                         help="FB+F RAW series analysed by each packaged app.")
+    parser.add_argument("--smoke-dark", nargs="+", type=Path, default=[])
     parser.add_argument("--libraw-source", nargs="*", type=Path, default=[],
                         help="LibRaw source archives to include for the LGPL offer.")
     options = parser.parse_args()
     if not options.libraw_source:
         parser.error("Supply the matching LibRaw source archives with --libraw-source.")
     raws = [path.resolve(strict=True) for path in options.smoke_raw]
+    darks = [path.resolve(strict=True) for path in options.smoke_dark]
     version = (ROOT / "VERSION").read_text().strip()
     release = ROOT / "dist" / f"v{version}"
     release.mkdir(parents=True, exist_ok=True)
@@ -132,7 +134,7 @@ def main():
             subprocess.run(["ditto", BUILDS / cpu / "dist/Camera-41_exp.app", app], check=True)
             result = audit(app, cpu, minimum, version)
             subprocess.run(["/usr/bin/arch", f"-{cpu}", app / "Contents/MacOS/Camera-41_exp",
-                            "--smoke-test", *raws], cwd=folder, check=True)
+                            "--smoke-test", *raws, *(["--smoke-dark", *darks] if darks else [])], cwd=folder, check=True)
             return cpu, result
 
         with ThreadPoolExecutor(max_workers=2) as pool:

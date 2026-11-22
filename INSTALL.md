@@ -1,6 +1,6 @@
-# Camera-41_exp v1.0.1 installation
+# Camera-41_exp v1.1.0 installation
 
-Open `Camera-41_exp-1.0.1-python-macos.dmg` from the v1.0.1 release assets.
+Open `Camera-41_exp-1.1.0-python-macos.dmg` from the v1.1.0 release assets.
 Drag **Camera-41_exp - Apple Silicon.app** to Applications on an M-series
 Mac with macOS 14 Sonoma or later, or **Camera-41_exp - Intel.app** on an Intel
 Mac with macOS 13 Ventura or later. Eject the disk image
@@ -9,7 +9,7 @@ MATLAB, Homebrew, PRE or NEG. The interface is in English.
 
 The apps are ad hoc signed. The disk image has no Apple notarisation.
 Compare the disk image against its accompanying SHA-256 file with
-`shasum -a 256 Camera-41_exp-1.0.1-python-macos.dmg`.
+`shasum -a 256 Camera-41_exp-1.1.0-python-macos.dmg`.
 
 ## First run
 
@@ -22,6 +22,20 @@ to run the automatic measurement. Read **Results** and **Exposure comparison**.
 The app remembers the last RAW folder. **Open log** opens the local diagnostic
 log at `~/Library/Logs/Camera-41_exp/camera41_exp.jsonl`. Source runs write
 `logs/camera41_exp.jsonl` in the checkout.
+
+## Optional dark-noise evaluation
+
+Select a passing time in **Choose a measured time** after exposure analysis.
+Enable **Evaluate dark noise (optional)**. Capture at least two independent
+capped-lens dark RAWs (8-16 recommended), with matching camera, ISO, shutter
+time and aperture, at similar sensor temperature. Disable long-exposure
+noise reduction. Use **Add dark RAWs…**, then **Evaluate noise**.
+Read **Dark noise** for S/N and bit estimates and their limits.
+S/N excludes photon shot noise; effective range bits are not ADC ENOB.
+While analysis runs, wait for the status message; no Escape key is needed.
+
+The Intel build is tested via Rosetta on Apple Silicon. A test on a physical
+Intel Mac will be performed later. macOS 13 has not been tested on hardware.
 
 ## Run or build from source
 
@@ -42,7 +56,7 @@ use the Ventura-compatible NumPy OpenBLAS wheel and pass
 built for macOS 13 or earlier. The release source archive includes that probe.
 The build is
 written to `local-config/python-app/<architecture>/dist/`. The executable
-accepts `--startup-check` and `--smoke-test /path/to/test.CR2`. Neither writes to the diagnostic log.
+accepts `--startup-check` and `--smoke-test /path/to/test.CR2`. Add `--smoke-dark DARK [DARK ...]` to test matched dark frames as well. Neither writes to the diagnostic log.
 With both apps built, `.venv/bin/python tools/build_dmg.py --libraw-source LibRaw-0.22.1.tar.gz LibRaw-0.22.3.tar.gz --smoke-raw RAW [RAW ...]` audits them and creates the disk image.
 Run the tests with `.venv/bin/python -m unittest discover -s tests`.
 

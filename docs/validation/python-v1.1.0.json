@@ -1,0 +1,20 @@
+{
+  "version": "1.1.0",
+  "date": "2026-11-22",
+  "unit_tests": 56,
+  "unit_tests_result": "PASS",
+  "packaged_smoke_tests": {
+    "arm64": "PASS: exposure bracket, automatic area, preview, chart, noise report",
+    "x86_64": "PASS through Rosetta: exposure bracket, automatic area, preview, chart, noise report"
+  },
+  "dataset": "Gold 200, Valoi_20260827_530/529/527/526.CR2; darks 557/558.CR2",
+  "dark_time": "1/10 s",
+  "minimum_macos": {
+    "arm64": "14.0",
+    "x86_64": "13.0"
+  },
+  "physical_intel": "Deferred; test on a physical Intel Mac will be performed later. macOS 13 not tested on hardware.",
+  "dmg_sha256": "3206d1dd4064f602dce780665a7eb81fd807de13a7e878eeeaa38bfd5d601c2a",
+  "signature": "ad hoc; no Apple notarisation",
+  "pdf_guides": "English and Swedish handbooks (6 pages each) and one-page summaries rendered and visually checked"
+}

@@ -1,3 +1,12 @@
+# Camera-41_exp v1.1.0 - 22 November 2026
+
+Shutter times below one second use reciprocal notation (for example 1/10 s); times of one second or longer use two decimal places (1.00 s). Display rounding does not change measurement or metadata matching.
+
+- Add optional dark-frame noise evaluation after a measured shutter time is selected.
+- Accept two or more independent dark RAWs, with metadata matching to the selected FB+F exposure.
+- Show temporal dark noise, dark-noise-limited S/N and noise-limited bit measures per Bayer channel.
+- Preserve signed black-subtracted values for dark measurements and invalidate results when exposure settings change.
+
 # Camera-41_exp v1.0.1
 
 - Show the app icon, the purpose of the app and the steps expected of the user when the window opens.

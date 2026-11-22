@@ -272,3 +272,12 @@ class DecodeTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ShutterDisplayTests(unittest.TestCase):
+    def test_photographic_display_preserves_unusual_times(self):
+        for seconds, expected in [(0.10000000149, "1/10 s"), (1/15, "1/15 s"),
+                                  (1/125, "1/125 s"), (.4, "1/2.5 s"),
+                                  (1, "1.00 s"), (1.234, "1.23 s"), (30, "30.00 s")]:
+            with self.subTest(seconds=seconds):
+                self.assertEqual(exposure.format_shutter(seconds), expected)

@@ -95,7 +95,7 @@ def is_raw(path):
     return Path(path).suffix[1:].lower() in RAW_EXTENSIONS
 
 
-def decode(path):
+def decode(path, *, preserve_negative=False):
     path = Path(path).resolve(strict=True)
     if not is_raw(path):
         raise ValueError(f"{path.name} is not a camera RAW file. Use the original RAW capture "
@@ -152,7 +152,8 @@ def decode(path):
     linear = np.empty(raw.shape, dtype=np.float32)
     for i, (r, c) in enumerate(POSITIONS):
         plane = raw[r::2, c::2].astype(float)
-        linear[r::2, c::2] = np.maximum(plane - black[i], 0) / code_range[i]
+        signal = plane - black[i]
+        linear[r::2, c::2] = (signal if preserve_negative else np.maximum(signal, 0)) / code_range[i]
     body = tuple(data[key] for key in ("make", "model", "body_serial", "internal_body_serial"))
     return Capture(path, before[2], body, iso, aperture, seconds, linear, code_range, fallback)
 
@@ -266,6 +267,18 @@ def select_exposure(readings):
     return result
 
 
+def format_shutter(seconds):
+    """Photographic display only; preserve measured seconds for calculations."""
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise ValueError("Shutter time must be finite and positive.")
+    if seconds >= 1 or math.isclose(seconds, 1, rel_tol=1e-6):
+        return f"{seconds:.2f} s"
+    reciprocal = 1 / seconds
+    integer = round(reciprocal)
+    denominator = str(integer) if abs(integer / reciprocal - 1) <= .03 else f"{reciprocal:.2f}".rstrip("0").rstrip(".")
+    return f"1/{denominator} s"
+
+
 def analyse(paths, roi=None):
     paths = [Path(path).resolve(strict=True) for path in paths]
     if not paths or len(paths) != len(set(paths)):
@@ -290,3 +303,65 @@ def analyse(paths, roi=None):
         del capture
     readings.sort(key=lambda row: row.seconds)
     return roi, readings, select_exposure(readings)
+
+
+def analyse_noise(reference_path, dark_paths, roi, expected_sha256):
+    """Single-frame temporal dark noise from per-pixel sample variance across RAWs.
+
+    Reports signal/dark-noise and log2(range/dark-noise). Shot noise in the
+    illuminated exposure requires a separate illuminated repeat measurement.
+    """
+    paths = [Path(p).resolve(strict=True) for p in dark_paths]
+    if len(paths) < 2 or len(set(paths)) != len(paths):
+        raise ValueError("Add at least two distinct dark RAW files.")
+    reference = decode(reference_path, preserve_negative=True)
+    if reference.sha256 != expected_sha256:
+        raise ValueError("The selected FB+F RAW changed. Analyse the exposure series again.")
+    if not reference.body[2] and not reference.body[3]:
+        raise ValueError("Camera serial metadata is required to match dark captures to the camera body.")
+    measure(reference, roi)  # Validate ROI against the visible sensor.
+    x, y, w, h = roi
+
+    def planes(capture):
+        region = capture.linear[y-1:y-1+h, x-1:x-1+w]
+        return [region[(r-y+1)%2::2, (c-x+1)%2::2].astype(float) * capture.code_range[i]
+                for i, (r, c) in enumerate(POSITIONS)]
+
+    reference_planes = planes(reference)
+    mean = [np.zeros_like(a) for a in reference_planes]
+    m2 = [np.zeros_like(a) for a in reference_planes]
+    sources, hashes = [], {reference.sha256}
+    for count, path in enumerate(paths, 1):
+        capture = decode(path, preserve_negative=True)
+        if capture.sha256 in hashes:
+            raise ValueError("Use independent dark captures. Duplicate RAW content was found.")
+        hashes.add(capture.sha256)
+        if (capture.body != reference.body or capture.iso != reference.iso
+                or capture.linear.shape != reference.linear.shape
+                or not math.isclose(capture.aperture, reference.aperture, rel_tol=1e-7)
+                or not math.isclose(capture.seconds, reference.seconds, rel_tol=1e-6)):
+            raise ValueError(f"{path.name}: dark RAWs must match the chosen FB+F camera body, ISO, shutter, aperture, sensor size.")
+        values = planes(capture)
+        if any(np.percentile(a, 99.9, method="hazen") >= .05 * reference.code_range[i]
+               for i, a in enumerate(values)):
+            raise ValueError(f"{path.name}: excessive signal for a dark capture. Check the lens cap and light leaks.")
+        for i, a in enumerate(values):
+            delta = a - mean[i]
+            mean[i] += delta / count
+            m2[i] += delta * (a - mean[i])
+        sources.append({"path": str(path), "sha256": capture.sha256})
+        del capture
+
+    channels = []
+    for i, name in enumerate(CHANNELS):
+        sigma = float(np.sqrt(np.mean(m2[i] / (len(paths) - 1))))
+        signal = float(np.median(reference_planes[i] - mean[i]))
+        valid = sigma > 0 and signal > 0
+        ratio = signal / sigma if valid else None
+        channels.append(dict(channel=name, noise_codes=sigma, signal_codes=signal,
+                             snr=ratio, snr_db=20*math.log10(ratio) if valid else None,
+                             signal_bits=math.log2(ratio) if valid else None,
+                             range_bits=math.log2(reference.code_range[i]/sigma) if sigma > 0 else None))
+    return dict(seconds=reference.seconds, iso=reference.iso, aperture=reference.aperture,
+                roi=roi, reference=dict(path=str(reference.path), sha256=reference.sha256),
+                dark_sources=sources, channels=channels, frame_count=len(paths))
