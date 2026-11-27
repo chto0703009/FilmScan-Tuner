@@ -1,3 +1,9 @@
+# FilmScan Tuner v1.1.4 - 27 November 2026
+
+- Show © 2026 Christer Törnkvist, the contact email and GPL-3.0-or-later in the macOS About window.
+
+---
+
 # FilmScan Tuner v1.1.3 - 27 November 2026
 
 - Preview the first added RAW and refresh automatically when selecting another file.

@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Open the disk image",
-          "Open FilmScan-Tuner-1.1.3-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
+          "Open FilmScan-Tuner-1.1.4-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
         ],
         [
           "2. Open the app",
@@ -144,12 +144,12 @@
         ],
         [
           "Requirements, edition and licences",
-          "This handbook covers the Python app in v1.1.3. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
+          "This handbook covers the Python app in v1.1.4. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
         ]
       ]
     }
   ],
-  "version": "1.1.3",
+  "version": "1.1.4",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/FilmScan-Tuner"

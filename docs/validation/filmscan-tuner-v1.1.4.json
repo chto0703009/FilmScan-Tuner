@@ -1,0 +1,16 @@
+{
+  "name": "FilmScan Tuner",
+  "version": "1.1.4",
+  "date": "2026-11-27",
+  "unit_tests": 56,
+  "result": "PASS",
+  "packaged_tests": {
+    "arm64": "PASS: exposure bracket, RAW preview, exposure comparison and four matching 1/10 s dark RAWs",
+    "x86_64": "PASS through Rosetta: same exposure and dark-noise workflow"
+  },
+  "documentation": "Five updated guides, 15 pages total, rendered and visually checked.",
+  "dmg_verification": "Verified SHA-256 and image integrity. Mounted read-only and verified app versions, architectures, signatures and all five bundled PDFs.",
+  "physical_intel": "Physical Intel and macOS Ventura were not tested.",
+  "dmg_sha256": "3e202d9fcd46044f00f0aa9cbb5793a88bad01b60a2a2880af70af9a19dc86bb",
+  "signature": "ad hoc; no Apple notarisation"
+}

@@ -19,15 +19,15 @@ sections=[
  ('Arbetsgång', '1. Öppna FilmScan Tuner från Program.\n2. Använd Add FB+F RAWs… för att läsa in en serie av samma tomma filmprov.\n3. Fyll i Light setup och Film base + fog. Markera Same FB+F sample in all RAWs.\n4. Tryck Analyse RAW images och läs rekommendationen i Exposure comparison.\n5. Kontrollera den valda tiden med en ny bild.'),
  ('Område och resultat', 'Appen väljer normalt centrala 70 % av bildens bredd och höjd. Vid oväntad struktur visas en gul ruta för manuell justering. Förhandsvisningen påverkar inte mätvärdena.\nPASS: minst 1/3 EV marginal i alla Bayer-kanaler och ingen underkänd andel vid/över gränsen. LOW: svag signal i en kanal. REVIEW: granska kanalresultaten. FAIL: för stor andel når eller överskrider gränsen. Läs kanalrapporten; rätt filmprov och område ska kontrolleras innan tiden ändras.'),
  ('Valfritt mörkerbrus', 'Välj efter exponeringsanalysen en tid i Choose a measured time (grön för PASS, annars röd) och klicka på Evaluate dark noise. Ta minst 2 oberoende mörker-RAW med objektivlock (8-16 rekommenderas), samma kamera, ISO, tid och bländare samt liknande temperatur. Stäng av brusreducering vid lång exponering. Använd Add dark RAWs… och Evaluate noise. Exposure comparison visar brus, signal och klippgräns på samma logskala. Dark noise visar S/N och bitvärden. Fotonbrus ingår inte; effektiva omfångsbitar är inte ADC ENOB. Handboken förklarar värdena. PRE och NEG är fristående; ingen JSON överförs.'),
- ('Installation, start och logg', 'Öppna FilmScan-Tuner-1.1.3-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac. Lägg till egna filmbasbilder med Add FB+F RAWs…. Open log visar den lokala diagnostikloggen. Avsluta appen innan du ersätter den.')]
-story=[para('FilmScan Tuner v1.1.3','title'),para('Christer Törnkvist | Sammanfattning','author')]
+ ('Installation, start och logg', 'Öppna FilmScan-Tuner-1.1.4-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac. Lägg till egna filmbasbilder med Add FB+F RAWs…. Open log visar den lokala diagnostikloggen. Avsluta appen innan du ersätter den.')]
+story=[para('FilmScan Tuner v1.1.4','title'),para('Christer Törnkvist | Sammanfattning','author')]
 story.append(para('Exposure and noise evaluation for camera scanning.','body'))
 for h,b in sections:story.extend([para(h,'h'),para(b,'body')])
 def footer(c,doc):
  w,h=A4;c.setStrokeColor(colors.HexColor('#d6e1e5'));c.line(54,65,w-54,65);c.setFillColor(BLUE);c.setFont('Helvetica',9)
  email='christer@borgasundsfotografiska.se';url='https://github.com/chto0703009/FilmScan-Tuner'
  c.drawString(54,49,email);c.linkURL('mailto:'+email,(54,47,54+c.stringWidth(email,'Helvetica',9),59))
- c.drawString(54,35,url);c.linkURL(url,(54,33,54+c.stringWidth(url,'Helvetica',9),45));c.setFont('Helvetica',8);c.drawString(54,20,'v1.1.3 | 27 november 2026 | GPL-3.0-or-later')
+ c.drawString(54,35,url);c.linkURL(url,(54,33,54+c.stringWidth(url,'Helvetica',9),45));c.setFont('Helvetica',8);c.drawString(54,20,'v1.1.4 | 27 november 2026 | GPL-3.0-or-later')
 SimpleDocTemplate(str(FILE),pagesize=A4,leftMargin=54,rightMargin=54,topMargin=48,bottomMargin=80,
- title='FilmScan Tuner v1.1.3 - Sammanfattning',author='Christer Törnkvist').build(story,onFirstPage=footer,onLaterPages=footer)
+ title='FilmScan Tuner v1.1.4 - Sammanfattning',author='Christer Törnkvist').build(story,onFirstPage=footer,onLaterPages=footer)
 print(FILE)

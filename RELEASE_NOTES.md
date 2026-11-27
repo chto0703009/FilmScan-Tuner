@@ -1,3 +1,15 @@
+# FilmScan Tuner v1.1.4 - 27 November 2026
+
+The macOS About window now shows the copyright notice for Christer Törnkvist,
+the contact address christer@borgasundsfotografiska.se and the GPL-3.0-or-later licence.
+
+The DMG includes Apple Silicon (macOS 14+) and Intel (macOS 13+) apps and the
+updated documentation. Intel was tested through Rosetta. Physical Intel and
+Ventura testing remain outstanding. The apps are ad hoc signed and have no
+Apple notarisation.
+
+---
+
 # FilmScan Tuner v1.1.3 - 27 November 2026
 
 *Exposure and noise evaluation for camera scanning.*

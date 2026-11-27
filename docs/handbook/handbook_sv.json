@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Öppna skivavbilden",
-          "Öppna FilmScan-Tuner-1.1.3-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
+          "Öppna FilmScan-Tuner-1.1.4-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
         ],
         [
           "2. Öppna appen",
@@ -144,12 +144,12 @@
         ],
         [
           "Krav, version och licenser",
-          "Handboken gäller Pythonappen i v1.1.3. FilmScan Tuner använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
+          "Handboken gäller Pythonappen i v1.1.4. FilmScan Tuner använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
         ]
       ]
     }
   ],
-  "version": "1.1.3",
+  "version": "1.1.4",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/FilmScan-Tuner"

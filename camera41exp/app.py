@@ -86,7 +86,7 @@ def raw_types():
     return [kind for kind in map(create, RAW_EXTENSIONS) if kind is not None]
 
 
-def build_menu(app):
+def build_menu(app, controller):
     main = A.NSMenu.alloc().init()
 
     def submenu(title, *entries):
@@ -99,8 +99,9 @@ def build_menu(app):
         main.addItemWithTitle_action_keyEquivalent_(title, None, "").setSubmenu_(menu)
         return menu
 
-    submenu(APP_NAME, (f"About {APP_NAME}", "orderFrontStandardAboutPanel:", ""), None,
-            (f"Hide {APP_NAME}", "hide:", "h"), None, (f"Quit {APP_NAME}", "terminate:", "q"))
+    app_menu = submenu(APP_NAME, (f"About {APP_NAME}", "showAbout:", ""), None,
+                       (f"Hide {APP_NAME}", "hide:", "h"), None, (f"Quit {APP_NAME}", "terminate:", "q"))
+    app_menu.itemAtIndex_(0).setTarget_(controller)
     submenu("Edit", ("Undo", "undo:", "z"), ("Redo", "redo:", "Z"), None, ("Cut", "cut:", "x"),
             ("Copy", "copy:", "c"), ("Paste", "paste:", "v"), ("Select All", "selectAll:", "a"))
     app.setWindowsMenu_(submenu("Window", ("Minimize", "performMiniaturize:", "m"),
@@ -892,6 +893,19 @@ class Controller(NSObject):
         self.status.setStringValue_("Dark-noise analysis complete for the selected exposure.")
         log("noise.complete", Result=result)
 
+    def showAbout_(self, sender):
+        credits = A.NSAttributedString.alloc().initWithString_(
+            "christer@borgasundsfotografiska.se\nGPL-3.0-or-later"
+        )
+        A.NSApplication.sharedApplication().orderFrontStandardAboutPanelWithOptions_({
+            "ApplicationName": APP_NAME,
+            "ApplicationVersion": VERSION,
+            "Version": "",
+            "ApplicationIcon": app_icon(),
+            "Copyright": "© 2026 Christer Törnkvist",
+            "Credits": credits,
+        })
+
     def openLog_(self, sender):
         log("log.open")
         A.NSWorkspace.sharedWorkspace().openURL_(A.NSURL.fileURLWithPath_(str(LOG_PATH)))
@@ -925,7 +939,7 @@ def main():
         log_enabled = False
     window = controller.build()
     app.setDelegate_(controller)
-    build_menu(app)
+    build_menu(app, controller)
     app.setApplicationIconImage_(app_icon())
     if args.startup_check or args.smoke_test:
         raw_probe()
