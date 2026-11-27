@@ -359,6 +359,7 @@ def analyse_noise(reference_path, dark_paths, roi, expected_sha256):
         valid = sigma > 0 and signal > 0
         ratio = signal / sigma if valid else None
         channels.append(dict(channel=name, noise_codes=sigma, signal_codes=signal,
+                             clipping_codes=float(reference.code_range[i]),
                              snr=ratio, snr_db=20*math.log10(ratio) if valid else None,
                              signal_bits=math.log2(ratio) if valid else None,
                              range_bits=math.log2(reference.code_range[i]/sigma) if sigma > 0 else None))

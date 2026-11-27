@@ -47,7 +47,7 @@ def footer(canvas, doc):
     url = 'https://github.com/chto0703009/FilmScan-Tuner'
     canvas.drawString(54, 47, url)
     canvas.linkURL(url, (54, 45, 54 + canvas.stringWidth(url, 'Helvetica', 8), 57))
-    canvas.drawString(54, 33, f'v{VERSION} | English | Christer Törnkvist | 22 November 2026')
+    canvas.drawString(54, 33, f'v{VERSION} | English | Christer Törnkvist | 27 November 2026')
     canvas.drawRightString(A4[0] - 54, 33, '1 / 1')
 
 
@@ -62,11 +62,11 @@ story += [
     step(3, 'Add the bracket and describe the sample',
          'Click <b>Add FB+F RAWs…</b> and select the bracket. Fill in <b>Light setup</b> (for example, your light and brightness setting) and <b>Film base + fog</b> (for example, Gold 200, clear area from this roll). Tick <b>Same FB+F sample in all RAWs</b>. Leave <b>Automatic area</b> enabled.'),
     step(4, 'Analyse and choose an exposure',
-         'Click <b>Analyse RAW images</b> and wait for completion. Read <b>Results</b> and <b>Exposure comparison</b>. Inspect any area warning with <b>Preview selected</b> and adjust the yellow rectangle over clean film if needed, then analyse again. <b>PASS</b> meets the exposure criteria; <b>LOW</b> means weak signal; <b>REVIEW / FAIL</b> need attention. Resolve proportionality warnings before using a candidate. Add further test exposures if requested.'),
+         'Click <b>Analyse RAW images</b> and wait for completion. <b>Exposure comparison</b> opens with the recommended or provisional shutter time and marks clipping. See <b>Results</b> for details. Inspect any area warning in <b>RAW preview</b> and adjust the yellow rectangle over clean film if needed, then analyse again. <b>PASS</b> meets the exposure criteria; <b>LOW</b> means weak signal; <b>REVIEW / FAIL</b> need attention. Resolve proportionality warnings before using a candidate. Add further test exposures if requested.'),
     step(5, 'Set the camera and verify',
          'Select a passing time in <b>Choose a measured time</b>. Set that time on the camera and take a fresh FB+F capture to verify it. The example bracket above is not a universal exposure recommendation. Repeat the evaluation when film base, ISO, aperture or lighting changes.'),
     step(6, 'Optional: evaluate dark noise at the chosen time',
-         'Enable <b>Evaluate dark noise (optional)</b>. Take at least <b>2 independent dark RAWs</b> (8-16 recommended) with the lens capped, matching camera, ISO, shutter time and aperture, at similar sensor temperature. Disable long-exposure noise reduction. Click <b>Add dark RAWs…</b>, then <b>Evaluate noise</b>. Read S/N and bit estimates in <b>Dark noise</b>. The app checks capture metadata and rejects duplicate content.'),
+         'Click <b>Evaluate dark noise</b>. Take at least <b>2 independent dark RAWs</b> (8-16 recommended) with the lens capped, matching camera, ISO, shutter time and aperture, at similar sensor temperature. Disable long-exposure noise reduction. Click <b>Add dark RAWs…</b>, then <b>Evaluate noise</b>. See noise, signal and clipping together on a log scale in <b>Exposure comparison</b>. <b>Dark noise</b> gives S/N and bit estimates.'),
 ]
 note = Table([[p('<b>Understand the noise result.</b> S/N uses temporal dark noise and excludes photon shot noise. Effective range bits describe noise-limited range; they are not ADC ENOB or nominal camera bit depth. See the handbook for definitions. Original RAW files are unchanged.', 'small')]], colWidths=[487])
 note.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, -1), PALE), ('BOX', (0, 0), (-1, -1), .5, colors.HexColor('#d6e1e5')), ('LEFTPADDING', (0, 0), (-1, -1), 10), ('RIGHTPADDING', (0, 0), (-1, -1), 10), ('TOPPADDING', (0, 0), (-1, -1), 8), ('BOTTOMPADDING', (0, 0), (-1, -1), 8)]))

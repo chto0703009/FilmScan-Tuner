@@ -21,7 +21,8 @@ from PyObjCTools import AppHelper
 
 from camera41exp.exposure import (
     format_shutter,
-    AreaReview, CHANNELS, MIN_SIGNAL, PASS_MARGIN, RAW_EXTENSIONS, ROOT, analyse, automatic_area, decode,
+    AreaReview, CHANNELS, FAIL_FRACTION, MIN_SIGNAL, PASS_MARGIN, RAW_EXTENSIONS, ROOT,
+    analyse, automatic_area, decode,
     is_raw, raw_probe, analyse_noise,
 )
 
@@ -32,7 +33,7 @@ PREFERENCES = A.NSUserDefaults.standardUserDefaults()
 LOG_PATH = (Path.home() / "Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl"
             if getattr(sys, "frozen", False) else ROOT / "logs/filmscan_tuner.jsonl")
 HANDOFF = (
-    "To evaluate dark noise here, enable Evaluate dark noise (optional), add at "
+    "To evaluate dark noise here, click Evaluate dark noise, add at "
     "least two matching dark RAWs and press Evaluate noise. PRE remains an "
     "independent workflow; load its captures directly in PRE tab 7."
 )
@@ -61,11 +62,11 @@ WELCOME = (
     "2.  Choose Add FB+F RAWs… and select those RAW files. JPEG, TIFF and other exports cannot be used.\n"
     "3.  Describe the Light setup and the Film base + fog sample, "
     "then tick Same FB+F sample in all RAWs.\n"
-    "4.  Optional: choose Preview selected to inspect the yellow measurement area. "
+    "4.  Optional: choose a file from the RAW dropdown to inspect the yellow measurement area. "
     "Drag on the image to move it.\n"
     "5.  Choose Analyse RAW images, then read Results and Exposure comparison.\n"
-    "6.  Pick a measured passing time in the list beside the Analyse button. "
-    "Optional: enable Evaluate dark noise, capture 8–16 dark RAWs at that time, "
+    "6.  Pick a measured time in the list beside the Analyse button. Green means PASS. "
+    "Optional: click Evaluate dark noise, capture 8–16 dark RAWs at that time, "
     "then add them and choose Evaluate noise."
 )
 NO_RESULTS = "No results yet. Add FB+F RAWs, fill in the fields above and choose Analyse RAW images."
@@ -179,14 +180,32 @@ def shutter_axis(seconds):
     return positions, ticks
 
 
-def comparison_image(rows):
-    image = Image.new("RGB", (900, 570), "white")
+def comparison_image(rows, selection, noise=None):
+    image = Image.new("RGB", (900, 630 if noise is None else 855), "white")
     draw = ImageDraw.Draw(image)
     positions, ticks = shutter_axis([row.seconds for row in rows])
     low, high = ticks[0][0], ticks[-1][0]
     colors = ("#b52235", "#19783c", "#557814", "#275aaa")
-    for name, title, offset in (("signal", "Median RAW signal above black (sensor codes)", 0),
-                                ("margin", "Headroom before clipping (EV)", 285)):
+    first_clipped = [
+        min((i for i, row in enumerate(rows) if row.clipped[channel] >= FAIL_FRACTION),
+            key=lambda i: rows[i].seconds, default=None)
+        for channel in range(len(CHANNELS))
+    ]
+    candidate = selection.candidate
+    heading = "No recommended shutter time"
+    accent, background = "#855300", "#fff4dc"
+    if candidate is not None:
+        if selection.status == "HIGHEST_BRACKETED_PASS_EXPOSURE_ONLY":
+            heading = f"Recommended: {format_shutter(candidate)}"
+            accent, background = "#17603a", "#eaf6ee"
+        elif selection.status.startswith("PROVISIONAL"):
+            heading = f"Provisional: {format_shutter(candidate)}"
+        else:
+            heading = f"Review before use: {format_shutter(candidate)}"
+    draw.rounded_rectangle((90, 9, 865, 54), radius=8, fill=background)
+    draw.text((105, 32), heading, anchor="lm", fill=accent, font_size=23)
+    for name, title, offset in (("signal", "Median RAW signal above black (sensor codes)", 60),
+                                ("margin", "Headroom before clipping (EV)", 345)):
         values = np.array([getattr(row, name) for row in rows])
         if name == "signal":
             minimum, maximum = 0, max(1, float(values.max()))
@@ -201,9 +220,16 @@ def comparison_image(rows):
         minimum, maximum = lower_tick * step, upper_tick * step
         x0, y0, x1, y1 = 90, offset + 58, 865, offset + 226
         draw.text((x0, offset + 8), title, fill="black", font_size=17)
-        subtitle = ("Higher values mean more signal from the film base." if name == "signal"
-                    else "Higher values mean more room before clipping. At 0 EV the signal reaches the limit.")
-        draw.text((x0, offset + 32), subtitle, fill="#444444", font_size=13)
+        if name == "signal":
+            y0 += 16
+            subtitle = "First measured clipping · squares mark where at least 0.01% of pixels reach the clipping reference"
+            draw.text((x0, offset + 32), subtitle, fill="#444444", font_size=13)
+            for i, (channel, index) in enumerate(zip(CHANNELS, first_clipped)):
+                time = format_shutter(rows[index].seconds) if index is not None else "none"
+                draw.text((x0 + 190*i, offset + 50), f"{channel}: {time}", fill=colors[i], font_size=14)
+        else:
+            draw.text((x0, offset + 32), "At 0 EV the 99.9th percentile reaches the clipping reference.",
+                      fill="#444444", font_size=13)
         for i, color in enumerate(colors):
             draw.text((x1 - 175 + 43*i, offset + 13), CHANNELS[i], fill=color, font_size=14)
 
@@ -238,12 +264,69 @@ def comparison_image(rows):
             draw.rectangle((left-4, top-2, right+4, bottom+2), fill="white")
             draw.text((x0+8, y-7), label, anchor="lb", fill="#333333", font_size=13)
         plotted_x = [abscissa(position) for position in positions]
+        if candidate is not None:
+            x = plotted_x[next(i for i, row in enumerate(rows) if row.seconds == candidate)]
+            draw.line((x, y0, x, y1), fill=accent, width=2)
+            draw.polygon(((x-5, y0), (x+5, y0), (x, y0+7)), fill=accent)
         for i, color in enumerate(colors):
             points = list(zip(plotted_x, map(ordinate, values[:, i])))
             if len(points) > 1:
                 draw.line(points, fill=color, width=2)
             for x, y in points:
                 draw.ellipse((x-3, y-3, x+3, y+3), fill=color)
+        if name == "signal":
+            for i, index in reversed(list(enumerate(first_clipped))):
+                if index is not None:
+                    x, y = plotted_x[index], ordinate(values[index, i])
+                    radius = 5 + (2 if i == 2 else 0)
+                    draw.rectangle((x-radius, y-radius, x+radius, y+radius), outline=colors[i], width=2)
+    if noise is not None:
+        draw.line((90, 632, 865, 632), fill="#d1d5db")
+        draw.text((90, 647), f"Measured dark noise at {format_shutter(noise['seconds'])}",
+                  fill="black", font_size=19)
+        draw.text((90, 673), f"{noise['frame_count']} dark RAWs · Sensor codes (log scale)",
+                  fill="#444444", font_size=13)
+        draw.ellipse((493, 654, 503, 664), fill="white", outline="#333333", width=2)
+        draw.ellipse((619, 654, 629, 664), fill="#333333")
+        draw.line((731, 653, 731, 665), fill="#333333", width=2)
+        for x, label in ((509, "Dark noise (RMS)"), (635, "Signal"), (741, "Clipping limit")):
+            draw.text((x, 652), label, fill="#333333", font_size=13)
+
+        channels = noise["channels"]
+        positive = [channel[key] for channel in channels
+                    for key in ("noise_codes", "signal_codes", "clipping_codes") if channel[key] > 0]
+        low = math.floor(math.log10(min(positive)))
+        high = max(low + 1, math.log10(max(positive)) + 0.08)
+        left, right, top, bottom = 130, 594, 702, 812
+
+        def log_position(value):
+            return left + (right - left) * (math.log10(value) - low) / (high - low)
+
+        for exponent in range(low, math.floor(high) + 1):
+            value = 10 ** exponent
+            x = log_position(value)
+            draw.line((x, top, x, bottom), fill="#d1d5db")
+            draw.text((x, bottom + 7), f"{value:,g}", anchor="mt", fill="#333333", font_size=12)
+        for x, heading in ((655, "Noise"), (720, "Signal"), (790, "Limit"), (865, "S/N")):
+            draw.text((x, top - 12), heading, anchor="rt", fill="#333333", font_size=13)
+        for i, (channel, color) in enumerate(zip(channels, colors)):
+            y = 714 + i * 26
+            draw.text((90, y), channel["channel"], anchor="lm", fill=color, font_size=14)
+            dark, signal, limit = (channel[key] for key in ("noise_codes", "signal_codes", "clipping_codes"))
+            if 0 < dark < signal:
+                draw.line((log_position(dark), y, log_position(signal), y), fill=color, width=8)
+            for value, filled in ((dark, False), (signal, True)):
+                if value > 0:
+                    x = log_position(value)
+                    draw.ellipse((x-5, y-5, x+5, y+5), fill=color if filled else "white",
+                                 outline=color, width=2)
+            x = log_position(limit)
+            draw.line((x, y-8, x, y+8), fill="#333333", width=2)
+            db = channel["snr_db"]
+            label = f"{db:.1f} dB" if db is not None else "Unresolved"
+            for x, value in ((655, f"{dark:.3f}"), (720, f"{signal:,.0f}"),
+                             (790, f"{limit:,.0f}"), (865, label)):
+                draw.text((x, y), value, anchor="rm", fill="#232323", font_size=14)
     return image
 
 
@@ -385,6 +468,7 @@ class Controller(NSObject):
     def build(self):
         self.paths, self.controls = [], []
         self.exposure_rows = []
+        self.exposure_selection = self.dark_result = None
         self.chosen_seconds = None
         self.dark_paths = []
         self.busy = self.manual_needed = False
@@ -401,13 +485,19 @@ class Controller(NSObject):
         self.window.setReleasedWhenClosed_(False)
         self.files = A.NSPopUpButton.alloc().initWithFrame_pullsDown_(NSMakeRect(0, 0, 320, 24), False)
         self.files.addItemWithTitle_("No RAW files")
+        self.files.setTarget_(self)
+        self.files.setAction_("chooseRAW:")
         self.files.widthAnchor().constraintEqualToConstant_(315).setActive_(True)
         self.controls.append(self.files)
         buttons = self.stack(False, self.button("Add FB+F RAWs…", "addFiles:"), self.files,
-                             self.button("Remove selected", "removeFile:"), self.button("Preview selected", "preview:"))
+                             self.button("Remove selected", "removeFile:"))
         self.light, self.sample = self.field(245), self.field(245)
-        fields = self.stack(False, A.NSTextField.labelWithString_("Light setup"), self.light,
-                            A.NSTextField.labelWithString_("Film base + fog"), self.sample)
+        light_label = A.NSTextField.labelWithString_("Light setup")
+        sample_label = A.NSTextField.labelWithString_("Film base + fog")
+        for label in (light_label, sample_label):
+            label.setContentHuggingPriority_forOrientation_(1000, A.NSLayoutConstraintOrientationHorizontal)
+        fields = self.stack(False, light_label, self.light, sample_label, self.sample)
+        self.light.widthAnchor().constraintEqualToAnchor_(self.sample.widthAnchor()).setActive_(True)
         self.automatic = A.NSButton.checkboxWithTitle_target_action_("Automatic area", self, "settingsChanged:")
         self.confirm = A.NSButton.checkboxWithTitle_target_action_("Same FB+F sample in all RAWs", self, "settingsChanged:")
         self.controls.extend([self.automatic, self.confirm])
@@ -446,11 +536,11 @@ class Controller(NSObject):
         self.times = A.NSPopUpButton.alloc().initWithFrame_pullsDown_(NSMakeRect(0, 0, 200, 24), False)
         self.times.setTarget_(self)
         self.times.setAction_("chooseTime:")
+        self.times.menu().setAutoenablesItems_(False)
         self.times.addItemWithTitle_("Analyse first")
         self.times.setEnabled_(False)
-        self.noise_enabled = A.NSButton.checkboxWithTitle_target_action_(
-            "Evaluate dark noise (optional)", self, "noiseChanged:")
-        self.controls.append(self.noise_enabled)
+        self.noise_enabled = self.button("Evaluate dark noise", "noiseChanged:")
+        self.noise_enabled.setButtonType_(A.NSButtonTypePushOnPushOff)
         self.dark_files = A.NSPopUpButton.alloc().initWithFrame_pullsDown_(NSMakeRect(0, 0, 210, 24), False)
         self.dark_files.widthAnchor().constraintEqualToConstant_(240).setActive_(True)
         self.dark_files.addItemWithTitle_("No dark RAWs")
@@ -470,7 +560,7 @@ class Controller(NSObject):
         noise_tab.setLabel_("Dark noise")
         noise_tab.setView_(noise_scroll)
         self.tabs.addTabViewItem_(noise_tab)
-        self.noise_report.setString_("Analyse exposure first, choose a passing time, then capture at least two independent dark RAWs (8–16 recommended) at that time. Keep camera, ISO, aperture and temperature the same. Cap the lens and disable in-camera long-exposure noise reduction.")
+        self.noise_report.setString_("Analyse exposure first, choose a measured time, then capture at least two independent dark RAWs (8–16 recommended) at that time. Keep camera, ISO, aperture and temperature the same. Cap the lens and disable in-camera long-exposure noise reduction.")
         footer = self.stack(False, self.button("Analyse RAW images", "runAnalysis:"), self.times,
                             self.button("Open log", "openLog:"))
         container = self.window.contentView()
@@ -482,10 +572,11 @@ class Controller(NSObject):
             view.topAnchor().constraintEqualToAnchor_constant_(top, 8 if previous else 14).setActive_(True)
             view.leadingAnchor().constraintEqualToAnchor_constant_(container.leadingAnchor(), 14).setActive_(True)
             trailing = view.trailingAnchor()
-            if view in (self.tabs, self.status):
+            if view in (fields, self.tabs, self.status):
                 trailing.constraintEqualToAnchor_constant_(container.trailingAnchor(), -14).setActive_(True)
             else:
                 trailing.constraintLessThanOrEqualToAnchor_constant_(container.trailingAnchor(), -14).setActive_(True)
+            if view not in (self.tabs, self.status):
                 view.setContentHuggingPriority_forOrientation_(750, A.NSLayoutConstraintOrientationVertical)
                 view.setContentCompressionResistancePriority_forOrientation_(1000, A.NSLayoutConstraintOrientationVertical)
             previous = view
@@ -519,7 +610,11 @@ class Controller(NSObject):
         for field in self.coords:
             field.setEditable_(manual)
         self.times.setEnabled_(not self.busy and self.times.numberOfItems() > 1)
-        ready = not self.busy and bool(self.noise_enabled.state()) and self.chosen_seconds is not None
+        can_choose_time = not self.busy and any(
+            item.representedObject() is not None for item in self.times.itemArray()
+        )
+        self.noise_enabled.setEnabled_(can_choose_time)
+        ready = can_choose_time and bool(self.noise_enabled.state()) and self.chosen_seconds is not None
         self.add_dark.setEnabled_(ready)
         self.clear_dark.setEnabled_(ready and bool(self.dark_paths))
         self.dark_files.setEnabled_(ready)
@@ -536,7 +631,9 @@ class Controller(NSObject):
 
     def settingsChanged_(self, sender):
         self.exposure_rows = []
+        self.exposure_selection = self.dark_result = None
         self.chosen_seconds = None
+        self.noise_enabled.setState_(A.NSControlStateValueOff)
         self.reset_dark()
         self.times.removeAllItems()
         self.times.addItemWithTitle_("Analyse first")
@@ -558,6 +655,7 @@ class Controller(NSObject):
         self.automatic.setState_(A.NSControlStateValueOn)
         self.settingsChanged_(None)
         log("files.updated", Files=[str(path) for path in self.paths])
+        self.chooseRAW_(self.files)
 
     def addFiles_(self, sender):
         panel = A.NSOpenPanel.openPanel()
@@ -621,7 +719,7 @@ class Controller(NSObject):
 
         def complete(result):
             image, self.sensor, area, reasons = result
-            if review or self.automatic.state() == A.NSControlStateValueOn:
+            if review or (not self.exposure_rows and self.automatic.state() == A.NSControlStateValueOn):
                 self.set_roi(area)
             if review:
                 self.automatic.setState_(A.NSControlStateValueOff)
@@ -634,9 +732,10 @@ class Controller(NSObject):
 
         self.background("Decoding selected RAW…", work, complete)
 
-    def preview_(self, sender):
-        if self.paths:
-            self.start_preview(self.paths[self.files.indexOfSelectedItem()])
+    def chooseRAW_(self, sender):
+        index = sender.indexOfSelectedItem()
+        if not self.busy and 0 <= index < len(self.paths):
+            self.start_preview(self.paths[index])
 
     def runAnalysis_(self, sender):
         light, sample = (str(field.stringValue()).strip() for field in (self.light, self.sample))
@@ -659,6 +758,7 @@ class Controller(NSObject):
     def show_results(self, result):
         roi, rows, selection = result
         self.exposure_rows = rows
+        self.exposure_selection = selection
         self.set_roi(roi)
         self.preview_panel.setNeedsDisplay_(True)
         lines = [SELECTION_MESSAGES[selection.status], f"Measurement area [x y width height]  {roi}",
@@ -679,19 +779,25 @@ class Controller(NSObject):
         if selection.candidate is not None:
             lines += ["", HANDOFF]
         self.report.setString_("\n".join(lines))
-        self.graph.show(native_image(comparison_image(rows)))
-        passing = sorted({row.seconds for row in rows if row.status == "PASS"}
-                         - {row.seconds for row in rows if row.status != "PASS"})
-        if selection.status == "REVIEW_INCONSISTENT_SERIES":
-            passing = []
+        self.graph.show(native_image(comparison_image(rows, selection)))
+        passing = ({row.seconds for row in rows if row.status == "PASS"}
+                   - {row.seconds for row in rows if row.status != "PASS"})
+        consistent = selection.status != "REVIEW_INCONSISTENT_SERIES"
         self.times.removeAllItems()
-        self.times.addItemWithTitle_("Repeat the series" if selection.status == "REVIEW_INCONSISTENT_SERIES"
-                                    else "Choose a measured time" if passing else "No passing exposure")
-        for time in passing:
-            self.times.addItemWithTitle_(f"{format_shutter(time)}")
-            self.times.lastItem().setRepresentedObject_(time)
+        self.times.addItemWithTitle_("Choose a measured time" if consistent else "Repeat the series")
+        for time in sorted({row.seconds for row in rows}):
+            passed = time in passing
+            title = f"{format_shutter(time)} · {'PASS' if passed else 'Not passed'}"
+            color = A.NSColor.systemGreenColor() if passed else A.NSColor.systemRedColor()
+            item = A.NSMenuItem.alloc().initWithTitle_action_keyEquivalent_(title, None, "")
+            item.setAttributedTitle_(A.NSAttributedString.alloc().initWithString_attributes_(
+                title, {A.NSForegroundColorAttributeName: color}))
+            item.setEnabled_(consistent)
+            if consistent:
+                item.setRepresentedObject_(time)
+            self.times.menu().addItem_(item)
         self.update_controls()
-        self.tabs.selectTabViewItemWithIdentifier_("results")
+        self.tabs.selectTabViewItemWithIdentifier_("comparison")
         self.status.setStringValue_(SELECTION_MESSAGES[selection.status])
         log("analysis.complete", ROI=roi, Measurements=[asdict(row) for row in rows],
             Selection=asdict(selection), HasMeasuredNoise=False)
@@ -702,19 +808,31 @@ class Controller(NSObject):
         self.reset_dark()
         self.update_controls()
         if time is not None:
-            self.status.setStringValue_(f"Chosen time {format_shutter(time)}. {HANDOFF}")
+            warning = ""
+            if any(row.seconds == time and row.status != "PASS" for row in self.exposure_rows):
+                warning = "Exposure did not pass. This time can be used to evaluate dark noise. "
+            self.status.setStringValue_(f"Chosen time {format_shutter(time)}. {warning}{HANDOFF}")
             log("time.chosen", Seconds=time)
 
     @objc.python_method
+    def clear_dark_result(self):
+        if self.dark_result is not None:
+            self.dark_result = None
+            self.graph.show(native_image(comparison_image(self.exposure_rows, self.exposure_selection)))
+
+    @objc.python_method
     def reset_dark(self):
+        self.clear_dark_result()
         self.dark_paths = []
         self.dark_files.removeAllItems()
         self.dark_files.addItemWithTitle_("No dark RAWs")
-        self.noise_report.setString_("Choose a passing time after exposure analysis. Capture at least two independent dark RAWs (8–16 recommended) with the same camera, ISO, aperture, shutter and temperature. Cap the lens and disable long-exposure noise reduction.")
+        self.noise_report.setString_("Choose a measured time after exposure analysis. Capture at least two independent dark RAWs (8–16 recommended) with the same camera, ISO, aperture, shutter and temperature. Cap the lens and disable long-exposure noise reduction.")
 
     def noiseChanged_(self, sender):
         self.reset_dark()
         self.update_controls()
+        if self.noise_enabled.state() and self.chosen_seconds is None:
+            self.status.setStringValue_("Choose a measured time next to Analyse RAW images.")
 
     def clearDark_(self, sender):
         self.reset_dark()
@@ -731,6 +849,7 @@ class Controller(NSObject):
             if not all(is_raw(path) for path in paths):
                 self.status.setStringValue_("Choose original camera RAW files for the dark captures.")
                 return
+            self.clear_dark_result()
             self.dark_paths = list(dict.fromkeys(self.dark_paths + paths))
             self.dark_files.removeAllItems()
             self.dark_files.addItemsWithTitles_([path.name for path in self.dark_paths])
@@ -740,7 +859,7 @@ class Controller(NSObject):
     def runNoise_(self, sender):
         if self.busy or self.chosen_seconds is None or len(self.dark_paths) < 2:
             return
-        row = next(row for row in self.exposure_rows if row.seconds == self.chosen_seconds and row.status == "PASS")
+        row = next(row for row in self.exposure_rows if row.seconds == self.chosen_seconds)
         paths, roi = self.dark_paths.copy(), self.roi
         self.noise_report.setString_("Evaluating dark RAWs…")
         self.background("Measuring temporal dark noise…",
@@ -748,6 +867,8 @@ class Controller(NSObject):
 
     @objc.python_method
     def show_noise(self, result):
+        self.dark_result = result
+        self.graph.show(native_image(comparison_image(self.exposure_rows, self.exposure_selection, result)))
         lines = [f"Dark noise at {format_shutter(result['seconds'])}, ISO {result['iso']:g}, f/{result['aperture']:g}",
                  f"{result['frame_count']} dark frames. Area {result['roi']}",
                  "Single-frame temporal noise from per-pixel sample variance across dark captures.",
@@ -764,6 +885,8 @@ class Controller(NSObject):
                       f"  Effective range {number(row['range_bits'])} bits; signal above noise {number(row['signal_bits'])} bits"]
         lines += ["", "Match camera temperature and capture settings. Camera RAW processing can influence the measurement.",
                   "Zero measured variance is unresolved and cannot establish an infinite dynamic range."]
+        if any(row.seconds == self.chosen_seconds and row.status != "PASS" for row in self.exposure_rows):
+            lines.insert(1, "The reference exposure did not pass. Interpret its signal-based S/N with care.")
         self.noise_report.setString_("\n".join(lines))
         self.tabs.selectTabViewItemWithIdentifier_("noise")
         self.status.setStringValue_("Dark-noise analysis complete for the selected exposure.")

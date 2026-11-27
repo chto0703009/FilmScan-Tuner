@@ -1,3 +1,17 @@
+# FilmScan Tuner v1.1.3 - 27 November 2026
+
+*Exposure and noise evaluation for camera scanning.*
+
+- The RAW preview updates automatically when files are added or selected. The Light setup and Film base + fog fields share the available width.
+- Exposure comparison opens after analysis. It highlights the recommended or provisional shutter time and marks the first measured clipping point for each channel.
+- The shutter-time menu shows passing times in green and other measured times in red. In a consistent series, both can be selected for dark-noise evaluation. The full-size Evaluate dark noise button becomes available after exposure analysis.
+- After measuring dark noise, Exposure comparison shows noise, signal and the clipping limit on one logarithmic scale. Each channel is coloured from noise to signal and shows its measured values and S/N.
+- Updated English and Swedish handbooks and summaries, plus the one-page English Getting Started guide.
+
+The DMG contains separate standalone apps for Apple Silicon (macOS 14 or later) and Intel (macOS 13 or later). Both include Python and LibRaw. The Intel app was tested through Rosetta on Apple Silicon. Physical Intel and Ventura testing remain outstanding. The apps are ad hoc signed and have no Apple notarisation.
+
+---
+
 # FilmScan Tuner v1.1.2 - 22 November 2026
 
 *Exposure and noise evaluation for camera scanning.*

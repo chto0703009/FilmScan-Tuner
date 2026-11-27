@@ -1,4 +1,4 @@
-# FilmScan Tuner v1.1.2
+# FilmScan Tuner v1.1.3
 
 *Exposure and noise evaluation for camera scanning.*
 
@@ -47,13 +47,13 @@ measurements, exposure selection and RAW decoding without needing RAW files.
 After building both apps, `.venv/bin/python tools/build_dmg.py --libraw-source LibRaw-0.22.1.tar.gz LibRaw-0.22.3.tar.gz --smoke-raw /path/to/series/*.CR2` audits them and
 creates the release disk image under `dist/`.
 
-Add blank film base + fog RAWs at different shutter times, document the light/sample and analyse. The app selects an edge-safe central area, checks for unexpected structure and compares RAW signal and clipping margin. A yellow region is shown for inspection or adjustment when needed. Choose a measured passing time in the list.
+Add blank film base + fog RAWs at different shutter times, document the light/sample and analyse. The app selects an edge-safe central area, checks for unexpected structure and compares RAW signal and clipping margin. A yellow region is shown for inspection or adjustment when needed. **Exposure comparison** opens automatically with the recommended or provisional time and the first measured clipping time per channel. The shutter-time list marks passing times green and other measured times red. All measured times in a consistent series are available for dark-noise evaluation.
 
-After exposure analysis, choose a measured passing shutter time and enable
-**Evaluate dark noise (optional)**. Capture at least two independent dark RAWs
+After exposure analysis, choose a measured shutter time and click
+**Evaluate dark noise**. Capture at least two independent dark RAWs
 (8–16 recommended) with the lens capped, at the same camera temperature, ISO,
 aperture and shutter time. Disable in-camera long-exposure noise reduction.
-Use **Add dark RAWs…** to load multiple files, then **Evaluate noise**.
+Use **Add dark RAWs…** to load multiple files, then **Evaluate noise**. **Exposure comparison** shows noise, signal and the clipping limit on one logarithmic scale, with colour filling the span from noise to signal for each channel.
 
 Every dark RAW is checked against the selected FB+F capture's camera serial,
 ISO, shutter time, aperture and sensor dimensions. Duplicate content and
@@ -90,14 +90,14 @@ Both interfaces use the bundled LibRaw probe. Original RAWs are unchanged. Autom
 
 - [English handbook (PDF)](output/pdf/FilmScan_Tuner_Handbook_EN.pdf)
 - [Svensk handbok (PDF)](output/pdf/FilmScan_Tuner_Handbook_SV.pdf)
-The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.2 handbooks above for current installation and controls.
+The following work instructions cover the wider Camera-41 workflow and refer to the earlier MATLAB interface. Use the v1.1.3 handbooks above for current installation and controls.
 
 - [Arbetsinstruktion för digitaliseringsexponering (PDF, svenska)](output/pdf/Camera41_EXP_Digitaliseringsexponering_SV.pdf) — FB+F-serie, exponeringsval och överlämning till Camera-41_pre.
 - [Digitisation exposure work instruction (PDF, English)](output/pdf/Camera41_EXP_Digitisation_Exposure_EN.pdf)
 
 Editable sources are in `docs/handbook/handbook_sv.json` and `handbook_en.json`. Rebuild both PDFs with `python tools/build_handbooks.py` (requires reportlab). The handbooks describe why FB+F exposure is used to avoid clipping, capture setup, automatic/manual areas, results, standalone operation and logging.
 
-[Sammanfattning på svenska (PDF)](output/pdf/FilmScan_Tuner_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.2.
+[Sammanfattning på svenska (PDF)](output/pdf/FilmScan_Tuner_Sammanfattning_SV.pdf) — svensk ensidesguide för v1.1.3.
 
 ## Legacy MATLAB Python environment
 

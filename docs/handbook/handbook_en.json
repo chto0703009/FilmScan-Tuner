@@ -2,7 +2,7 @@
   "language": "EN",
   "title": "User handbook",
   "subtitle": "Exposure and noise evaluation for camera scanning.",
-  "date": "22 November 2026",
+  "date": "27 November 2026",
   "pages": [
     {
       "title": "Why use FilmScan Tuner?",
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Open the disk image",
-          "Open FilmScan-Tuner-1.1.2-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
+          "Open FilmScan-Tuner-1.1.3-macos.dmg. Drag the Apple Silicon app to Applications on an M-series Mac, or choose the Intel app for an Intel Mac."
         ],
         [
           "2. Open the app",
@@ -66,7 +66,7 @@
         ],
         [
           "Add and preview RAW files",
-          "Add FB+F RAWs… accepts one or more files. Later selections are added to the list; the same path is not duplicated. The file chooser remembers the latest RAW folder across app restarts. Remove selected removes a row from the bracket, not the original file.\nSelect a row and press Preview selected to inspect it. RAW preview is a display image with brightness adjustment; screen brightness does not determine whether the measurement passes."
+          "Add FB+F RAWs… accepts one or more files. Later selections are added to the list; the same path is not duplicated. The file chooser remembers the latest RAW folder across app restarts. Remove selected removes a row from the bracket, not the original file.\nChoose a RAW from the file dropdown to preview it. RAW preview is a display image with brightness adjustment; screen brightness does not determine whether the measurement passes."
         ],
         [
           "Automatic area",
@@ -88,7 +88,7 @@
         ],
         [
           "Plots and table",
-          "Exposure comparison uses 1/3 EV shutter steps and camera-style times such as 1/20, 1/15 and 1/10. The upper chart shows median RAW signal above black in sensor codes. The lower chart shows headroom before the RAW linearity limit in EV. At 0 EV the measured percentile reaches the limit. The dashed 1/3 EV line marks the minimum headroom for PASS. Results lists the file, time, status, signal, headroom and fraction at or above the limit for each channel. Times below one second are displayed as reciprocals, for example 1/10 s, preferably with an integer denominator. Times of one second or longer use two decimal places, for example 1.00 s. Only the display is rounded."
+          "Exposure comparison opens after analysis and highlights the recommended or provisional time. The signal chart marks the first measured time when each channel reaches the clipping threshold. The headroom chart marks the 1/3 EV minimum for PASS. Results gives the per-file and per-channel measurements. Shutter times are rounded for display only."
         ],
         [
           "A candidate may need more evidence",
@@ -96,7 +96,7 @@
         ],
         [
           "Choose a time with margin",
-          "Choose a measured time lists the times for which all replicates passed the clipping criteria. Review any proportionality warning before using the candidate. Verify your chosen time with a fresh FB+F capture. If the results contradict each other, the app asks you to repeat the series before choosing a time."
+          "Choose a measured time lists passing times in green and other measured times in red. Red times remain selectable for dark-noise evaluation. Verify a passing time with a fresh FB+F capture. If the series is inconsistent, repeat it before choosing a time."
         ]
       ]
     },
@@ -106,11 +106,11 @@
       "sections": [
         [
           "1. Evaluate exposure first",
-          "Analyse the FB+F bracket, review any proportionality warning, then select a passing time in Choose a measured time. Dark-noise controls become available only after this selection. No key press or camera action is needed while analysis runs. Wait for the status message."
+          "Analyse the FB+F bracket and review any warnings. Choose the measured time you want to evaluate and click Evaluate dark noise. Add dark RAWs becomes available when both steps are complete."
         ],
         [
           "2. Capture and add dark RAWs",
-          "Enable Evaluate dark noise (optional). Capture at least two independent dark RAWs; 8-16 are recommended for a steadier estimate. Cap the lens and prevent light leaks. Keep the same camera, ISO, shutter time and aperture, and a similar sensor temperature. Disable long-exposure noise reduction. Use Add dark RAWs… to select several files, then Evaluate noise."
+          "Click Evaluate dark noise. Capture at least two independent dark RAWs; 8-16 are recommended for a steadier estimate. Cap the lens and prevent light leaks. Keep the same camera, ISO, shutter time and aperture, and a similar sensor temperature. Disable long-exposure noise reduction. Use Add dark RAWs… to select several files, then Evaluate noise."
         ],
         [
           "3. Matching and measurement",
@@ -118,7 +118,7 @@
         ],
         [
           "4. Read Dark noise",
-          "Noise is the square root of the mean per-pixel sample variance across dark frames. Stable spatial offsets cancel. Signal is the median FB+F signal after subtraction of the mean dark image. S/N = signal / noise; S/N in dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(usable RAW code range / noise). Unresolved zero-noise or nonpositive-signal results are reported without a numeric ratio."
+          "Noise is the square root of the mean per-pixel sample variance across dark frames. Stable spatial offsets cancel. Signal is the median FB+F signal after subtraction of the mean dark image. S/N = signal / noise; S/N in dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(usable RAW code range / noise). Unresolved zero-noise or nonpositive-signal results are reported without a numeric ratio.\nExposure comparison places RMS noise, film-base signal and the clipping limit on one logarithmic scale for all four channels. Colour fills the span from noise to signal. The gap to the clipping marker shows the remaining headroom on this scale."
         ],
         [
           "5. Scope and example",
@@ -136,7 +136,7 @@
         ],
         [
           "If something looks wrong",
-          "Select a file and press Preview selected. For a failed analysis, read the status message and inspect the local log. Check that the RAW file and its drive are still available."
+          "Choose a RAW from the file dropdown to preview it. For a failed analysis, read the status message and inspect the local log. Check that the RAW file and its drive are still available."
         ],
         [
           "Log and retained information",
@@ -144,12 +144,12 @@
         ],
         [
           "Requirements, edition and licences",
-          "This handbook covers the Python app in v1.1.2. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
+          "This handbook covers the Python app in v1.1.3. FilmScan Tuner uses GPL-3.0-or-later. See LICENSE, LICENSE_NOTICE.md and the bundled third-party notices."
         ]
       ]
     }
   ],
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/FilmScan-Tuner"

@@ -2,7 +2,7 @@
   "language": "SV",
   "title": "Handbok",
   "subtitle": "Exposure and noise evaluation for camera scanning.",
-  "date": "22 november 2026",
+  "date": "27 november 2026",
   "pages": [
     {
       "title": "Varför använda FilmScan Tuner?",
@@ -32,7 +32,7 @@
       "sections": [
         [
           "1. Öppna skivavbilden",
-          "Öppna FilmScan-Tuner-1.1.2-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
+          "Öppna FilmScan-Tuner-1.1.3-macos.dmg. Dra Apple Silicon-appen till Program på en Mac med M-chip. Välj Intel-appen för en Intel-Mac."
         ],
         [
           "2. Öppna appen",
@@ -66,7 +66,7 @@
         ],
         [
           "Läs in och förhandsvisa",
-          "Add FB+F RAWs… lägger till en eller flera filer. Ytterligare filval läggs till i listan; samma sökväg dubbleras inte. Filväljaren minns senaste RAW-mappen även efter omstart. Remove selected tar bort vald rad ur provserien, inte originalfilen.\nMarkera en rad och välj Preview selected för att se bilden. RAW preview är en visningsbild med ljushetsanpassning; skärmens ljushet avgör inte om mätningen godkänns."
+          "Add FB+F RAWs… lägger till en eller flera filer. Ytterligare filval läggs till i listan; samma sökväg dubbleras inte. Filväljaren minns senaste RAW-mappen även efter omstart. Remove selected tar bort vald rad ur provserien, inte originalfilen.\nVälj en RAW-fil i rullgardinslistan för att se bilden. RAW preview är en visningsbild med ljushetsanpassning; skärmens ljushet avgör inte om mätningen godkänns."
         ],
         [
           "Automatiskt område",
@@ -88,7 +88,7 @@
         ],
         [
           "Diagram och tabell",
-          "Exposure comparison visar slutartider i 1/3 EV-steg med kamerans beteckningar, till exempel 1/20, 1/15 och 1/10. Övre diagrammet visar median RAW-signal över svartnivån i sensorkoder. Nedre diagrammet visar marginalen till RAW-linjäritetsgränsen i EV. Vid 0 EV når den uppmätta percentilen gränsen. Den streckade linjen vid 1/3 EV markerar minsta marginal för PASS. Results visar fil, tid, status, signal, marginal och andel vid eller över gränsen per kanal. Tider under en sekund visas som bråk, exempelvis 1/10 s, helst med heltal i nämnaren. Tider från en sekund visas med två decimaler, exempelvis 1.00 s. Endast visningen avrundas."
+          "Exposure comparison öppnas efter analysen och markerar rekommenderad eller preliminär tid. Signaldiagrammet markerar den första uppmätta tiden där varje kanal når klippkriteriet. Marginaldiagrammet visar gränsen på 1/3 EV för PASS. Results visar mätvärden per fil och kanal. Slutartiderna avrundas bara i visningen."
         ],
         [
           "Förslag är inte alltid ett färdigt val",
@@ -96,7 +96,7 @@
         ],
         [
           "Välj tid med marginal",
-          "Choose a measured time listar tider där alla upprepningar klarade klippkriterierna. Granska en eventuell proportionalitetsvarning innan du använder kandidaten. Kontrollera vald tid med en ny FB+F-bild. Vid motstridiga resultat ber appen dig ta om serien innan du väljer en tid."
+          "Choose a measured time visar godkända tider i grönt och övriga uppmätta tider i rött. Röda tider kan väljas för mörkerbrusmätning. Kontrollera en godkänd tid med en ny FB+F-bild. Gör om serien om resultaten är motstridiga."
         ]
       ]
     },
@@ -106,11 +106,11 @@
       "sections": [
         [
           "1. Utvärdera exponeringen först",
-          "Analysera FB+F-serien, granska eventuell proportionalitetsvarning och välj en godkänd tid i Choose a measured time. Först därefter aktiveras bruskontrollerna. Under analysen behöver du inte trycka någon tangent eller göra något med kameran. Vänta på statusmeddelandet."
+          "Analysera FB+F-serien och granska eventuella varningar. Välj den uppmätta tid du vill undersöka och klicka på Evaluate dark noise. Add dark RAWs blir tillgänglig när båda stegen är klara."
         ],
         [
           "2. Ta och lägg till mörkerbilder",
-          "Markera Evaluate dark noise (optional). Ta minst två oberoende mörker-RAW; 8-16 rekommenderas för en stabilare skattning. Sätt på objektivlock och hindra ljusläckage. Behåll samma kamera, ISO, slutartid och bländare samt liknande sensortemperatur. Stäng av kamerans brusreducering vid lång exponering. Välj flera filer med Add dark RAWs… och tryck Evaluate noise."
+          "Klicka på Evaluate dark noise. Ta minst två oberoende mörker-RAW; 8-16 rekommenderas för en stabilare skattning. Sätt på objektivlock och hindra ljusläckage. Behåll samma kamera, ISO, slutartid och bländare samt liknande sensortemperatur. Stäng av kamerans brusreducering vid lång exponering. Välj flera filer med Add dark RAWs… och tryck Evaluate noise."
         ],
         [
           "3. Matchning och mätning",
@@ -118,7 +118,7 @@
         ],
         [
           "4. Läs Dark noise",
-          "Bruset är kvadratroten av medelvärdet av varje pixels stickprovsvarians över mörkerbilderna. Stabila rumsliga avvikelser faller bort. Signalen är medianen i FB+F efter att mörkerbildernas medelbild dragits bort. S/N = signal / brus; S/N i dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(användbart RAW-kodomfång / brus). Vid oupplöst nollbrus eller icke-positiv signal visas inget numeriskt förhållande."
+          "Bruset är kvadratroten av medelvärdet av varje pixels stickprovsvarians över mörkerbilderna. Stabila rumsliga avvikelser faller bort. Signalen är medianen i FB+F efter att mörkerbildernas medelbild dragits bort. S/N = signal / brus; S/N i dB = 20 log10(S/N). Signal bits = log2(S/N). Effective range bits = log2(användbart RAW-kodomfång / brus). Vid oupplöst nollbrus eller icke-positiv signal visas inget numeriskt förhållande.\nExposure comparison visar RMS-brus, filmbassignal och klippgräns på en logaritmisk skala för alla fyra kanaler. Färgen fyller sträckan från brus till signal. Mellanrummet till klippmarkeringen visar återstående marginal på skalan."
         ],
         [
           "5. Tolkning och exempel",
@@ -136,7 +136,7 @@
         ],
         [
           "När något verkar fel",
-          "Välj en fil och tryck Preview selected. Vid analysfel kan du läsa statusmeddelandet och öppna den lokala loggen. Kontrollera att RAW-filen och disken den ligger på fortfarande är tillgängliga."
+          "Välj en RAW-fil i rullgardinslistan för att se bilden. Vid analysfel kan du läsa statusmeddelandet och öppna den lokala loggen. Kontrollera att RAW-filen och disken den ligger på fortfarande är tillgängliga."
         ],
         [
           "Logg och sparade uppgifter",
@@ -144,12 +144,12 @@
         ],
         [
           "Krav, version och licenser",
-          "Handboken gäller Pythonappen i v1.1.2. FilmScan Tuner använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
+          "Handboken gäller Pythonappen i v1.1.3. FilmScan Tuner använder GPL-3.0-or-later. Se LICENSE, LICENSE_NOTICE.md och medföljande tredjepartslicenser."
         ]
       ]
     }
   ],
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": "Christer Törnkvist",
   "email": "christer@borgasundsfotografiska.se",
   "github": "https://github.com/chto0703009/FilmScan-Tuner"

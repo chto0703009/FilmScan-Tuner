@@ -1,27 +1,30 @@
-# FilmScan Tuner v1.1.2 installation
+# FilmScan Tuner v1.1.3 installation
 
 Exposure and noise evaluation for camera scanning.
 
 Designed for VALOI hardware with a CS Light light table, but not limited to this equipment; other camera-scanning setups can also be used.
 
-Open `FilmScan-Tuner-1.1.2-macos.dmg` from the v1.1.2 release assets.
+Open `FilmScan-Tuner-1.1.3-macos.dmg` from the v1.1.3 release assets.
 Drag **FilmScan Tuner - Apple Silicon.app** to Applications on an M-series
 Mac with macOS 14 Sonoma or later, or **FilmScan Tuner - Intel.app** on an Intel
 Mac with macOS 13 Ventura or later. Eject the disk image
 and open the installed app. It includes Python and LibRaw and runs without
 MATLAB, Homebrew, PRE or NEG. The interface is in English.
 
-The apps are ad hoc signed. The disk image has no Apple notarisation.
+The apps are ad hoc signed. The disk image has no Apple notarisation. macOS
+may show a Gatekeeper alert at first launch. See [Apple’s guidance on opening apps](https://support.apple.com/en-us/102445).
 Compare the disk image against its accompanying SHA-256 file with
-`shasum -a 256 FilmScan-Tuner-1.1.2-macos.dmg`.
+`shasum -a 256 FilmScan-Tuner-1.1.3-macos.dmg`.
 
 ## First run
 
 Use **Add FB+F RAWs…** to load Bayer RAWs of the same empty film-base sample
 taken with fixed camera, ISO, aperture and lighting. Fill in **Light setup**
 and **Film base + fog**, then tick **Same FB+F sample in all RAWs**. Use
-**Preview selected** to inspect the yellow area or **Analyse RAW images**
-to run the automatic measurement. Read **Results** and **Exposure comparison**.
+a RAW from the file dropdown to inspect the yellow area, or click
+**Analyse RAW images** to run the automatic measurement. **Exposure comparison**
+opens automatically and shows the recommended or provisional time and the
+first measured clipping time per channel. The **Results** tab has the detailed measurements. Read **Results** and **Exposure comparison**.
 
 The app remembers the last RAW folder. **Open log** opens the local diagnostic
 log at `~/Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl`. Source runs write
@@ -29,8 +32,11 @@ log at `~/Library/Logs/FilmScan Tuner/filmscan_tuner.jsonl`. Source runs write
 
 ## Optional dark-noise evaluation
 
-Select a passing time in **Choose a measured time** after exposure analysis.
-Enable **Evaluate dark noise (optional)**. Capture at least two independent
+After exposure analysis, select a shutter time in **Choose a measured time**.
+Green times passed the exposure check. Red times can be used for dark-noise evaluation.
+Click **Evaluate dark noise**. After evaluation, **Exposure comparison**
+shows dark noise, signal and the clipping limit on one log scale per channel.
+The colour spans noise to signal. Capture at least two independent
 capped-lens dark RAWs (8-16 recommended), with matching camera, ISO, shutter
 time and aperture, at similar sensor temperature. Disable long-exposure
 noise reduction. Use **Add dark RAWs…**, then **Evaluate noise**.

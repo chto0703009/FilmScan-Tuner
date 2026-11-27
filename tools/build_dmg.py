@@ -8,7 +8,6 @@ signature, then run with --smoke-test on the given FB+F RAW series.
 """
 
 import argparse
-from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
 import os
@@ -143,8 +142,8 @@ def main():
                             "--smoke-test", *raws, *(["--smoke-dark", *darks] if darks else [])], cwd=folder, check=True)
             return cpu, result
 
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            audits = dict(pool.map(check_build, APPS))
+        # Full-resolution dark-noise smoke tests hold several sensor-sized arrays.
+        audits = dict(check_build(item) for item in APPS)
         image = folder / target.name
         subprocess.run(["hdiutil", "create", "-quiet", "-volname", f"FilmScan Tuner {version}",
                         "-srcfolder", content, "-format", "UDZO", image], check=True)

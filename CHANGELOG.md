@@ -1,3 +1,14 @@
+# FilmScan Tuner v1.1.3 - 27 November 2026
+
+- Preview the first added RAW and refresh automatically when selecting another file.
+- Give Light setup and Film base + fog equal field widths.
+- Open Exposure comparison after analysis and highlight the suggested time and per-channel clipping.
+- Mark measured times green for PASS and red otherwise, and allow either for dark-noise evaluation in a consistent series.
+- Use a full-size dark-noise button and show measured noise, signal and clipping on a shared logarithmic scale.
+- Update the five guides and package both macOS architectures in one DMG.
+
+---
+
 # FilmScan Tuner v1.1.2 - 22 November 2026
 
 *Exposure and noise evaluation for camera scanning.*
